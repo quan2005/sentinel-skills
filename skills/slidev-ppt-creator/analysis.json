@@ -1,0 +1,55 @@
+{
+  "presentation_type": "technical",
+  "visual_elements": [
+    "diagram",
+    "code",
+    "image"
+  ],
+  "structure": [
+    {
+      "index": 0,
+      "type": "demo",
+      "content": "Create a comprehensive technical presentation about the Skills project. The project includes fastmcp-app-creator for MCP server generation and slidev-ppt-creator for professional presentations. Showcase project architecture",
+      "estimated_slides": 4
+    },
+    {
+      "index": 1,
+      "type": "main",
+      "content": "technical implementation",
+      "estimated_slides": 2
+    },
+    {
+      "index": 2,
+      "type": "demo",
+      "content": "code examples",
+      "estimated_slides": 2
+    },
+    {
+      "index": 3,
+      "type": "main",
+      "content": "development workflow",
+      "estimated_slides": 2
+    },
+    {
+      "index": 4,
+      "type": "features",
+      "content": "and features with rich visual elements and diagrams.",
+      "estimated_slides": 2
+    }
+  ],
+  "complexity": "intermediate",
+  "audience": "developers",
+  "keywords": [
+    "project",
+    "technical",
+    "creator",
+    "create",
+    "comprehensive",
+    "presentation",
+    "about",
+    "skills",
+    "includes",
+    "fastmcp"
+  ],
+  "recommended_template": "technical"
+}

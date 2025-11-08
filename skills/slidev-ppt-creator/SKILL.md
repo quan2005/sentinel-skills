@@ -16,6 +16,7 @@ This skill specializes in creating professional, feature-rich presentations usin
 - Content structure analysis and section organization
 - Visual element requirement identification
 - Target audience complexity assessment
+- **Compact mode detection** - Automatically identifies when ultra-compact layouts are needed based on content density requirements
 
 ### 🎨 **Advanced Theming System**
 - 8 professional themes (Business, Technical, Education, General, Minimal, Creative, Medical, Academic)
@@ -110,6 +111,14 @@ include market analysis showing 25% growth, competitor comparison with 3 key pla
 and financial projections for 5 years. Use professional blue theme with charts."
 ```
 
+### **Compact Mode Method** (NEW)
+Ultra-compact presentations with maximum information density:
+```
+"Create a highly compact technical presentation with extremely rich content,
+tight layout, and dense information display. Include architecture diagrams,
+code examples, performance metrics, and comprehensive technical analysis in a space-efficient format."
+```
+
 ### **Structured Input Method** (Enhanced)
 Detailed requirements with theme and styling specifications:
 ```
@@ -117,6 +126,7 @@ Detailed requirements with theme and styling specifications:
   "title": "Microservices Architecture Guide",
   "type": "technical",
   "theme": "technical-dark",
+  "compact_mode": true,
   "audience": "senior developers",
   "customizations": {
     "primary_color": "#10B981",
@@ -139,6 +149,7 @@ Guided creation with theme previews and customization:
 3. Content structure optimization based on template type
 4. Visual element suggestions with theme-coordinated styling
 5. Real-time validation and optimization recommendations
+6. **Compact mode auto-detection** - Automatically suggests ultra-compact layouts for information-dense content
 
 ## Enhanced Asset Structure
 
@@ -147,6 +158,8 @@ Guided creation with theme previews and customization:
 - `technical/technical-template.md` - 802-line detailed technical template
 - `education/education-template.md` - Complete educational template with learning objectives
 - `general/general-template.md` - Versatile general-purpose template
+- `compact/compact-template.md` - Ultra-compact template for information-dense presentations
+- `compact/compact-technical-template.md` - Specialized compact template for technical deep dives
 
 ### **Components** (`assets/components/`)
 - `charts/BarChart.vue` - Animated bar chart component with theme support
@@ -231,6 +244,23 @@ Output: Technical presentation with:
 - Performance metrics charts
 - Implementation timeline flowchart
 ```
+
+### **Ultra-Compact Technical Presentation** (NEW)
+```
+Input: "Create a highly compact technical presentation with extremely rich content,
+       tight layout, and dense information display. Include architecture diagrams,
+       code examples, performance metrics, and comprehensive technical analysis."
+
+Output: Ultra-compact technical presentation with:
+- Compact-technical template with dark theme
+- Information-dense grid layouts
+- 16+ slides of technical content
+- Maximum information per slide
+- Small font size (text-xs) for compactness
+- Color-coded technical sections
+- Code examples and architectural diagrams
+- Performance data visualizations
+- Mermaid flowcharts and architecture diagrams
 
 ### **Educational Presentation**
 ```

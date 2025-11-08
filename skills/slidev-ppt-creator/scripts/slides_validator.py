@@ -447,20 +447,6 @@ def format_validation_report(result: Dict[str, Any]) -> str:
 if __name__ == "__main__":
     import sys
     sys.exit(main())
-
-        if not frontmatter_match:
-            self.errors.append("Missing or invalid YAML frontmatter")
-            return
-
-        frontmatter = frontmatter_match.group(1)
-
-        # Check required fields
-        required_fields = ['title', 'theme']
-        for field in required_fields:
-            if f'{field}:' not in frontmatter:
-                self.errors.append(f"Missing required field in frontmatter: {field}")
-
-        # Check optional but recommended fields
         recommended_fields = ['author', 'date']
         for field in recommended_fields:
             if f'{field}:' not in frontmatter:

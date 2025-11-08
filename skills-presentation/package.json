@@ -1,0 +1,62 @@
+{
+  "name": "skills-project-presentation",
+  "version": "1.0.0",
+  "description": "Skills项目技术展示 - 专业Claude Code技能集合演示",
+  "scripts": {
+    "dev": "slidev",
+    "build": "slidev build",
+    "export": "slidev export --format pdf",
+    "export-pptx": "slidev export --format pptx",
+    "export-png": "slidev export --format png --with-clicks",
+    "serve": "slidev serve"
+  },
+  "dependencies": {
+    "@slidev/cli": "latest",
+    "@slidev/theme-default": "latest",
+    "@slidev/theme-seriph": "latest",
+    "mermaid": "latest"
+  },
+  "devDependencies": {
+    "@iconify-json/carbon": "latest",
+    "playwright-chromium": "latest"
+  },
+  "slidev": {
+    "theme": "default",
+    "author": "Francis",
+    "title": "Skills项目技术展示",
+    "description": "专业技术演示，展示Claude Code技能集合项目",
+    "favicon": "https://cdn.jsdelivr.net/gh/slidevjs/slidev/assets/favicon.png",
+    "themeConfig": {
+      "primary": "#1e40af",
+      "primaryDark": "#1e3a8a",
+      "secondary": "#7c3aed",
+      "tertiary": "#059669"
+    },
+    "features": {
+      "mermaid": true,
+      "treeShaking": true,
+      "drawings": {
+        "persist": false,
+        "enabled": true
+      }
+    },
+    "info": {
+      "title": "Skills项目技术展示",
+      "author": "Francis",
+      "date": "2025-11-08",
+      "description": "一个专业的Claude Code技能集合项目技术演示"
+    }
+  },
+  "keywords": [
+    "slidev",
+    "presentation",
+    "technical",
+    "skills",
+    "mcp",
+    "claude-code",
+    "vue",
+    "python",
+    "javascript"
+  ],
+  "license": "MIT"
+}

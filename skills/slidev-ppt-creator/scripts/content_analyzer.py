@@ -47,6 +47,12 @@ class ContentAnalyzer:
             'conclusion': ['conclusion', 'summary', 'wrap-up', 'ending', 'final', '总结', '结束', '结论']
         }
 
+        # Compact mode indicators
+        self.compact_indicators = [
+            'compact', 'dense', 'tight', 'compressed', '极致紧凑', '内容紧凑', '极度丰富',
+            '信息密集', '简洁', '精简', '高度浓缩', '信息密度', '紧凑布局'
+        ]
+
     def analyze(self, user_input: str) -> Dict[str, Any]:
         """
         Analyze user input and return comprehensive analysis.
@@ -64,6 +70,7 @@ class ContentAnalyzer:
             'complexity': self._assess_complexity(user_input),
             'audience': self._identify_audience(user_input),
             'keywords': self._extract_keywords(user_input),
+            'compact_mode': self._detect_compact_mode(user_input),
             'recommended_template': None
         }
 
@@ -218,11 +225,60 @@ class ContentAnalyzer:
 
         return [kw for kw, count in keyword_counts.most_common(10)]
 
+    def _detect_compact_mode(self, text: str) -> bool:
+        """
+        Detect if user wants compact mode based on keywords.
+
+        Args:
+            text: User input text
+
+        Returns:
+            True if compact mode is requested
+        """
+        text_lower = text.lower()
+
+        # Check for explicit compact mode keywords
+        for indicator in self.compact_indicators:
+            if indicator in text_lower:
+                return True
+
+        # Check for implicit indicators (content-rich requirements)
+        implicit_indicators = [
+            '内容极度丰富', '信息密集', '大量信息', '详细信息',
+            'comprehensive', 'detailed', 'extensive', 'thorough',
+            'in-depth', 'complete overview', 'full coverage'
+        ]
+
+        for indicator in implicit_indicators:
+            if indicator in text_lower:
+                return True
+
+        # Check for technical complexity indicators
+        tech_indicators = [
+            'technical', 'architecture', 'implementation', 'code examples',
+            'data structures', 'algorithms', 'system design', '技术', '架构', '实现', '代码示例'
+        ]
+
+        tech_count = sum(1 for indicator in tech_indicators if indicator in text_lower)
+        if tech_count >= 3:  # If multiple technical keywords, suggest compact mode
+            return True
+
+        # Check for length - very long requests often need compact mode
+        if len(text) > 200:  # If request is very detailed, likely needs compact mode
+            return True
+
+        return False
+
     def _recommend_template(self, analysis: Dict[str, Any]) -> str:
         """Recommend the best template based on analysis."""
         ptype = analysis['presentation_type']
         complexity = analysis['complexity']
         visual_elements = analysis['visual_elements']
+        compact_mode = analysis.get('compact_mode', False)
+
+        # If compact mode is requested, prioritize compact templates
+        if compact_mode:
+            return 'compact-technical' if ptype == 'technical' else 'compact'
 
         # Base recommendation on presentation type
         template_map = {
