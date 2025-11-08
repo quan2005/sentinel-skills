@@ -8,8 +8,8 @@
 
 1. **创建技能目录**
    ```bash
-   mkdir marketplace/skills/your-skill-name
-   cd marketplace/skills/your-skill-name
+   mkdir skills/your-skill-name
+   cd skills/your-skill-name
    ```
 
 2. **编写技能文档 (SKILL.md)**
@@ -117,7 +117,7 @@
 ### 示例技能结构
 
 ```
-marketplace/skills/example-skill/
+skills/example-skill/
 ├── SKILL.md           # 技能文档
 ├── install.sh         # 安装脚本
 ├── package.json       # 配置文件

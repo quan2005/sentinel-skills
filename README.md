@@ -6,12 +6,11 @@
 
 ```
 skills/
-├── marketplace/           # 技能市场
-│   └── skills/           # 个人技能
-│       └── skill-name/   # 具体技能目录
-│           ├── SKILL.md  # 技能说明文档
-│           ├── install.sh # 安装脚本
-│           └── package.json # 技能配置
+├── skills/               # 个人技能目录
+│   └── skill-name/       # 具体技能目录
+│       ├── SKILL.md      # 技能说明文档
+│       ├── install.sh    # 安装脚本
+│       └── package.json  # 技能配置
 ├── examples/             # 示例文件
 ├── templates/            # 模板文件
 ├── scripts/              # 构建和工具脚本
@@ -25,7 +24,7 @@ skills/
 
 ### 创建新技能
 
-1. 在 `marketplace/skills/` 下创建新目录
+1. 在 `skills/` 下创建新目录
 2. 编写 `SKILL.md` 技能说明文档
 3. 创建 `install.sh` 安装脚本
 4. 添加 `package.json` 配置文件

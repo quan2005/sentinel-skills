@@ -6,7 +6,7 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-MARKETPLACE_DIR="$SCRIPT_DIR/../marketplace/skills"
+SKILLS_DIR="$SCRIPT_DIR/../skills"
 
 # Color output
 RED='\033[0;31m'
@@ -22,7 +22,7 @@ print_validation_header() {
 
 validate_skill() {
     local skill_name="$1"
-    local skill_dir="$MARKETPLACE_DIR/$skill_name"
+    local skill_dir="$SKILLS_DIR/$skill_name"
     local errors=0
     local warnings=0
 
@@ -96,12 +96,12 @@ validate_all_skills() {
     local total_errors=0
     local total_warnings=0
 
-    if [ ! -d "$MARKETPLACE_DIR" ]; then
+    if [ ! -d "$SKILLS_DIR" ]; then
         echo -e "${RED}Error: No skills directory found${NC}"
         return 1
     fi
 
-    for skill_dir in "$MARKETPLACE_DIR"/*; do
+    for skill_dir in "$SKILLS_DIR"/*; do
         if [ -d "$skill_dir" ]; then
             skill_name=$(basename "$skill_dir")
             validate_skill "$skill_name"

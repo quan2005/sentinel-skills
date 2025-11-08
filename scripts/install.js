@@ -6,7 +6,7 @@ const chalk = require('chalk');
 
 const SCRIPT_DIR = __dirname;
 const ROOT_DIR = path.dirname(SCRIPT_DIR);
-const MARKETPLACE_DIR = path.join(ROOT_DIR, 'marketplace', 'skills');
+const SKILLS_DIR = path.join(ROOT_DIR, 'skills');
 
 function printUsage() {
     console.log('Usage: npm run install [skill-name]');
@@ -22,12 +22,12 @@ function listSkills() {
     console.log(chalk.blue('Available skills:'));
     console.log('');
 
-    if (!fs.existsSync(MARKETPLACE_DIR)) {
+    if (!fs.existsSync(SKILLS_DIR)) {
         console.log(chalk.yellow('No skills directory found'));
         return;
     }
 
-    const skills = fs.readdirSync(MARKETPLACE_DIR, { withFileTypes: true })
+    const skills = fs.readdirSync(SKILLS_DIR, { withFileTypes: true })
         .filter(dirent => dirent.isDirectory())
         .map(dirent => dirent.name);
 
@@ -37,7 +37,7 @@ function listSkills() {
     }
 
     skills.forEach(skillName => {
-        const skillDoc = path.join(MARKETPLACE_DIR, skillName, 'SKILL.md');
+        const skillDoc = path.join(SKILLS_DIR, skillName, 'SKILL.md');
         if (fs.existsSync(skillDoc)) {
             const content = fs.readFileSync(skillDoc, 'utf8');
             const firstLine = content.split('\n')[0];
@@ -50,7 +50,7 @@ function listSkills() {
 }
 
 function installSkill(skillName) {
-    const skillDir = path.join(MARKETPLACE_DIR, skillName);
+    const skillDir = path.join(SKILLS_DIR, skillName);
 
     if (!fs.existsSync(skillDir)) {
         console.log(chalk.red(`Error: Skill '${skillName}' not found`));
@@ -92,12 +92,12 @@ function installAllSkills() {
     console.log(chalk.blue('Installing all available skills...'));
     console.log('');
 
-    if (!fs.existsSync(MARKETPLACE_DIR)) {
+    if (!fs.existsSync(SKILLS_DIR)) {
         console.log(chalk.red('Error: No skills directory found'));
         return;
     }
 
-    const skills = fs.readdirSync(MARKETPLACE_DIR, { withFileTypes: true })
+    const skills = fs.readdirSync(SKILLS_DIR, { withFileTypes: true })
         .filter(dirent => dirent.isDirectory())
         .map(dirent => dirent.name);
 

@@ -6,7 +6,7 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-MARKETPLACE_DIR="$SCRIPT_DIR/marketplace/skills"
+SKILLS_DIR="$SCRIPT_DIR/skills"
 
 # Color output
 RED='\033[0;31m'
@@ -34,12 +34,12 @@ list_skills() {
     echo -e "${BLUE}Available skills:${NC}"
     echo ""
 
-    if [ ! -d "$MARKETPLACE_DIR" ]; then
+    if [ ! -d "$SKILLS_DIR" ]; then
         echo -e "${YELLOW}No skills directory found${NC}"
         return 1
     fi
 
-    for skill_dir in "$MARKETPLACE_DIR"/*; do
+    for skill_dir in "$SKILLS_DIR"/*; do
         if [ -d "$skill_dir" ]; then
             skill_name=$(basename "$skill_dir")
             skill_doc="$skill_dir/SKILL.md"
@@ -57,7 +57,7 @@ list_skills() {
 
 install_skill() {
     local skill_name="$1"
-    local skill_dir="$MARKETPLACE_DIR/$skill_name"
+    local skill_dir="$SKILLS_DIR/$skill_name"
 
     if [ ! -d "$skill_dir" ]; then
         echo -e "${RED}Error: Skill '$skill_name' not found${NC}"
@@ -91,7 +91,7 @@ install_all_skills() {
     echo -e "${BLUE}Installing all available skills...${NC}"
     echo ""
 
-    if [ ! -d "$MARKETPLACE_DIR" ]; then
+    if [ ! -d "$SKILLS_DIR" ]; then
         echo -e "${RED}Error: No skills directory found${NC}"
         return 1
     fi
@@ -99,7 +99,7 @@ install_all_skills() {
     local installed_count=0
     local failed_count=0
 
-    for skill_dir in "$MARKETPLACE_DIR"/*; do
+    for skill_dir in "$SKILLS_DIR"/*; do
         if [ -d "$skill_dir" ]; then
             skill_name=$(basename "$skill_dir")
 
