@@ -1,0 +1,14 @@
+{
+  "name": "personal-skills",
+  "version": "1.0.0",
+  "description": "个人Claude Code技能集合",
+  "author": {
+    "name": "Francis",
+    "email": "francis@example.com"
+  },
+  "homepage": "https://github.com/francis/skills#readme",
+  "repository": "https://github.com/francis/skills",
+  "license": "MIT",
+  "keywords": ["claude-code", "skills", "personal", "automation"],
+  "skills": "./skills"
+}
