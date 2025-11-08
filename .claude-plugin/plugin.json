@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "个人Claude Code技能集合",
   "author": {
-    "name": "Francis",
-    "email": "francis@example.com"
+    "name": "quan2005",
+    "email": "quan2005@example.com"
   },
-  "homepage": "https://github.com/francis/skills#readme",
-  "repository": "https://github.com/francis/skills",
+  "homepage": "https://github.com/quan2005/skills#readme",
+  "repository": "https://github.com/quan2005/skills",
   "license": "MIT",
   "keywords": ["claude-code", "skills", "personal", "automation"],
   "skills": "./skills"

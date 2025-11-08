@@ -2,7 +2,7 @@
 name: ppt-builder
 description: This skill should be used when the user needs to create professional, visually rich presentations using Slidev. It specializes in generating comprehensive slide decks with data visualizations, professional layouts, and compelling content structure.
 version: 1.0.0
-author: Francis
+author: quan2005
 capabilities:
   - "Create professional slide decks with Slidev"
   - "Generate data visualizations and charts"
