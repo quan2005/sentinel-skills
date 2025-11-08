@@ -1,0 +1,58 @@
+{
+  "name": "slidev-presentation-skill",
+  "version": "1.0.0",
+  "description": "Create beautiful presentations using Slidev framework with markdown-based syntax, themes, layouts, and interactive features",
+  "main": "slidev-presentation-creator.md",
+  "keywords": [
+    "slidev",
+    "presentation",
+    "markdown",
+    "slides",
+    "vue",
+    "claude-code-skill"
+  ],
+  "author": "Claude Code",
+  "license": "MIT",
+  "category": "presentation",
+  "type": "skill",
+  "files": [
+    "slidev-presentation-creator.md",
+    "examples/",
+    "templates/",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "test": "echo \"No tests specified\" && exit 0",
+    "validate": "echo \"Validating skill...\"",
+    "install-skill": "echo \"Install this skill by copying slidev-presentation-creator.md to your Claude skills directory\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/slidev-presentation-skill.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/slidev-presentation-skill/issues"
+  },
+  "homepage": "https://github.com/your-username/slidev-presentation-skill#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "skill": {
+    "type": "documentation",
+    "framework": "slidev",
+    "compatibility": [
+      "claude-code",
+      "claude-code-skill"
+    ],
+    "installation": {
+      "method": "copy",
+      "source": "slidev-presentation-creator.md",
+      "target": "~/.claude/skills/"
+    }
+  },
+  "dependencies": {
+    "@slidev/theme-apple-basic": "^0.25.1",
+    "@slidev/theme-seriph": "^0.25.0"
+  }
+}
