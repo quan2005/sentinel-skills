@@ -1,58 +1,35 @@
 {
-  "name": "slidev-presentation-skill",
+  "name": "personal-skills",
   "version": "1.0.0",
-  "description": "Create beautiful presentations using Slidev framework with markdown-based syntax, themes, layouts, and interactive features",
-  "main": "slidev-presentation-creator.md",
-  "keywords": [
-    "slidev",
-    "presentation",
-    "markdown",
-    "slides",
-    "vue",
-    "claude-code-skill"
-  ],
-  "author": "Claude Code",
-  "license": "MIT",
-  "category": "presentation",
-  "type": "skill",
-  "files": [
-    "slidev-presentation-creator.md",
-    "examples/",
-    "templates/",
-    "README.md",
-    "package.json"
-  ],
+  "description": "个人Claude Code技能集合",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"No tests specified\" && exit 0",
-    "validate": "echo \"Validating skill...\"",
-    "install-skill": "echo \"Install this skill by copying slidev-presentation-creator.md to your Claude skills directory\""
+    "install": "node scripts/install.js",
+    "validate": "node scripts/validate-skills.js",
+    "test": "node scripts/test-skills.js"
   },
+  "keywords": [
+    "claude-code",
+    "skills",
+    "ai",
+    "automation"
+  ],
+  "author": "Francis",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-username/slidev-presentation-skill.git"
+    "url": "git+https://github.com/francis/skills.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/slidev-presentation-skill/issues"
+    "url": "https://github.com/francis/skills/issues"
   },
-  "homepage": "https://github.com/your-username/slidev-presentation-skill#readme",
+  "homepage": "https://github.com/francis/skills#readme",
   "engines": {
     "node": ">=14.0.0"
   },
-  "skill": {
-    "type": "documentation",
-    "framework": "slidev",
-    "compatibility": [
-      "claude-code",
-      "claude-code-skill"
-    ],
-    "installation": {
-      "method": "copy",
-      "source": "slidev-presentation-creator.md",
-      "target": "~/.claude/skills/"
-    }
-  },
-  "dependencies": {
-    "@slidev/theme-apple-basic": "^0.25.1",
-    "@slidev/theme-seriph": "^0.25.0"
+  "devDependencies": {
+    "chalk": "^4.1.2",
+    "fs-extra": "^10.1.0",
+    "glob": "^8.0.3"
   }
 }

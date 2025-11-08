@@ -1,93 +1,141 @@
 #!/bin/bash
 
-# Slidev Presentation Skill Installation Script
-# This script installs the slidev presentation skill into Claude Code
+# Personal Skills Installation Script
+# Usage: ./install.sh [skill-name]
 
 set -e
 
-# Colors for output
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MARKETPLACE_DIR="$SCRIPT_DIR/marketplace/skills"
+
+# Color output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Function to print colored output
-print_status() {
-    echo -e "${BLUE}[INFO]${NC} $1"
+print_usage() {
+    echo "Usage: $0 [skill-name]"
+    echo ""
+    echo "Options:"
+    echo "  skill-name    Install a specific skill"
+    echo "  --all         Install all available skills"
+    echo "  --list        List available skills"
+    echo "  --help        Show this help message"
+    echo ""
+    echo "Examples:"
+    echo "  $0 my-cool-skill"
+    echo "  $0 --all"
+    echo "  $0 --list"
 }
 
-print_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
-}
+list_skills() {
+    echo -e "${BLUE}Available skills:${NC}"
+    echo ""
 
-print_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
-}
-
-print_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-}
-
-# Check if Claude Code directory exists
-CLAUDE_DIR="$HOME/.claude"
-SKILLS_DIR="$CLAUDE_DIR/skills"
-
-if [ ! -d "$CLAUDE_DIR" ]; then
-    print_error "Claude Code directory not found at $CLAUDE_DIR"
-    print_error "Please make sure Claude Code is installed and has been run at least once"
-    exit 1
-fi
-
-# Create skills directory if it doesn't exist
-if [ ! -d "$SKILLS_DIR" ]; then
-    print_status "Creating skills directory at $SKILLS_DIR"
-    mkdir -p "$SKILLS_DIR"
-fi
-
-# Get the script directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKILL_FILE="$SCRIPT_DIR/slidev-presentation-creator.md"
-TARGET_FILE="$SKILLS_DIR/slidev-presentation-creator.md"
-
-# Check if skill file exists
-if [ ! -f "$SKILL_FILE" ]; then
-    print_error "Skill file not found at $SKILL_FILE"
-    print_error "Please run this script from the slidev-presentation-skill directory"
-    exit 1
-fi
-
-# Check if skill already exists
-if [ -f "$TARGET_FILE" ]; then
-    print_warning "Skill already exists at $TARGET_FILE"
-    read -p "Do you want to overwrite it? (y/N): " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        print_status "Installation cancelled"
-        exit 0
+    if [ ! -d "$MARKETPLACE_DIR" ]; then
+        echo -e "${YELLOW}No skills directory found${NC}"
+        return 1
     fi
-fi
 
-# Copy the skill file
-print_status "Installing slidev presentation skill..."
-cp "$SKILL_FILE" "$TARGET_FILE"
+    for skill_dir in "$MARKETPLACE_DIR"/*; do
+        if [ -d "$skill_dir" ]; then
+            skill_name=$(basename "$skill_dir")
+            skill_doc="$skill_dir/SKILL.md"
 
-# Verify installation
-if [ -f "$TARGET_FILE" ]; then
-    print_success "Skill installed successfully!"
-    print_status "Skill location: $TARGET_FILE"
+            if [ -f "$skill_doc" ]; then
+                # Extract first line from SKILL.md as description
+                description=$(head -n 1 "$skill_doc" | sed 's/^# //')
+                echo -e "  ${GREEN}$skill_name${NC} - $description"
+            else
+                echo -e "  ${YELLOW}$skill_name${NC} - (no documentation)"
+            fi
+        fi
+    done
+}
 
-    echo
-    print_status "Usage examples:"
-    echo "  /slidev create \"My Presentation\""
-    echo "  /slidev create \"Tech Talk\" --theme \"seriph\""
-    echo "  /slidev create \"Demo\" --template \"company\""
+install_skill() {
+    local skill_name="$1"
+    local skill_dir="$MARKETPLACE_DIR/$skill_name"
 
-    echo
-    print_status "The skill will be available the next time you start Claude Code"
-    print_status "If Claude Code is already running, you may need to restart it"
+    if [ ! -d "$skill_dir" ]; then
+        echo -e "${RED}Error: Skill '$skill_name' not found${NC}"
+        echo -e "${YELLOW}Available skills:${NC}"
+        list_skills
+        return 1
+    fi
 
-else
-    print_error "Installation failed"
-    exit 1
-fi
+    local install_script="$skill_dir/install.sh"
+
+    if [ ! -f "$install_script" ]; then
+        echo -e "${RED}Error: No install script found for skill '$skill_name'${NC}"
+        return 1
+    fi
+
+    echo -e "${BLUE}Installing skill: $skill_name${NC}"
+
+    # Make install script executable and run it
+    chmod +x "$install_script"
+    (cd "$skill_dir" && ./install.sh)
+
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}✓ Successfully installed skill: $skill_name${NC}"
+    else
+        echo -e "${RED}✗ Failed to install skill: $skill_name${NC}"
+        return 1
+    fi
+}
+
+install_all_skills() {
+    echo -e "${BLUE}Installing all available skills...${NC}"
+    echo ""
+
+    if [ ! -d "$MARKETPLACE_DIR" ]; then
+        echo -e "${RED}Error: No skills directory found${NC}"
+        return 1
+    fi
+
+    local installed_count=0
+    local failed_count=0
+
+    for skill_dir in "$MARKETPLACE_DIR"/*; do
+        if [ -d "$skill_dir" ]; then
+            skill_name=$(basename "$skill_dir")
+
+            if install_skill "$skill_name"; then
+                ((installed_count++))
+            else
+                ((failed_count++))
+            fi
+            echo ""
+        fi
+    done
+
+    echo -e "${GREEN}Installation summary:${NC}"
+    echo -e "  ${GREEN}✓ Successfully installed: $installed_count${NC} skills"
+    if [ $failed_count -gt 0 ]; then
+        echo -e "  ${RED}✗ Failed to install: $failed_count${NC} skills"
+    fi
+}
+
+# Main script logic
+case "${1:-}" in
+    --help|-h)
+        print_usage
+        ;;
+    --list|-l)
+        list_skills
+        ;;
+    --all|-a)
+        install_all_skills
+        ;;
+    "")
+        echo -e "${YELLOW}No skill specified. Use --all to install all skills or --list to see available skills.${NC}"
+        echo ""
+        print_usage
+        ;;
+    *)
+        install_skill "$1"
+        ;;
+esac
