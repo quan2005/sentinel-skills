@@ -31,15 +31,28 @@ This repository includes skills focused on development productivity and content 
 
 ## Claude Code
 
-You can install this repository as a Claude Code Plugin by cloning it and running:
+You can install this repository as a Claude Code Plugin from the marketplace by running:
+
+```
+/plugin marketplace add quan2005/skills
+```
+
+Then, to install specific skills:
+
+1. Select `Browse and install plugins`
+2. Select `quan2005-skills`
+3. Select the skills you want to install
+4. Select `Install now`
+
+Alternatively, you can clone and install locally:
 
 ```bash
 # Clone this repository
 git clone https://github.com/quan2005/skills.git
 cd skills
 
-# Install as plugin
-claude plugin install .
+# Install as local plugin
+claude plugin trust .
 ```
 
 After installing the plugin, you can use the skills by just mentioning them. For instance:
