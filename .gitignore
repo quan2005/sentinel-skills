@@ -8,6 +8,7 @@ yarn-error.log*
 dist/
 build/
 *.tsbuildinfo
+*.pyc
 
 # Environment variables
 .env
