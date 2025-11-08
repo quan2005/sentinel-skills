@@ -1,0 +1,35 @@
+{
+  "name": "claude-skills-presentation",
+  "version": "1.0.0",
+  "description": "Professional presentation showcasing the Claude Skills repository",
+  "type": "module",
+  "scripts": {
+    "dev": "slidev",
+    "build": "slidev build",
+    "export": "slidev export --format pdf",
+    "export-pptx": "slidev export --format pptx",
+    "export-png": "slidev export --format png --with-clicks"
+  },
+  "dependencies": {
+    "@slidev/cli": "^0.48.0",
+    "@slidev/theme-default": "^0.21.0",
+    "@slidev/theme-seriph": "^0.21.0",
+    "@slidev/theme-apple-basic": "^0.21.0",
+    "mermaid": "^10.6.0",
+    "vue": "^3.3.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "playwright": "^1.39.0"
+  },
+  "keywords": [
+    "slidev",
+    "presentation",
+    "claude",
+    "skills",
+    "mcp",
+    "automation"
+  ],
+  "author": "Francis",
+  "license": "MIT"
+}
