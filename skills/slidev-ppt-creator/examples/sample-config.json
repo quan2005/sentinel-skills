@@ -1,0 +1,38 @@
+{
+  "business_demo": {
+    "description": "Create a business proposal presentation for a new AI-powered customer service platform",
+    "input": "Create a business proposal presentation for an AI-powered customer service platform that helps companies reduce support costs by 60% while improving customer satisfaction. Include market analysis, product features, business model, competitive advantages, and investment opportunities. Target audience is potential investors and enterprise customers.",
+    "title": "AI Customer Service Platform - Investment Proposal",
+    "expected_template": "business",
+    "expected_slides": 8,
+    "visual_elements": ["chart", "diagram"],
+    "complexity": "intermediate"
+  },
+  "tech_sharing": {
+    "description": "Create a technical presentation about microservices migration",
+    "input": "Create a technical sharing presentation about migrating from monolithic architecture to microservices. Include the challenges of monolithic systems, microservices design patterns, implementation strategies, database considerations, monitoring and observability, and lessons learned. Include code examples and architecture diagrams.",
+    "title": "Microservices Migration - A Technical Journey",
+    "expected_template": "technical",
+    "expected_slides": 10,
+    "visual_elements": ["diagram", "code"],
+    "complexity": "advanced"
+  },
+  "education_training": {
+    "description": "Create an educational presentation about React Hooks",
+    "input": "Create an educational presentation about React Hooks for frontend developers. Cover useState, useEffect, useContext, useReducer, and custom hooks. Include practical examples, common pitfalls, performance optimization techniques, and hands-on exercises. Make it interactive and engaging for learners.",
+    "title": "Mastering React Hooks - Complete Guide",
+    "expected_template": "education",
+    "expected_slides": 12,
+    "visual_elements": ["code"],
+    "complexity": "intermediate"
+  },
+  "product_launch": {
+    "description": "Create a product launch presentation for a new mobile app",
+    "input": "Create a product launch presentation for a new fitness tracking mobile app. Include market opportunity, app features and benefits, user interface design, technology stack, monetization strategy, marketing plan, and timeline. Show screenshots and user journey flows. Make it exciting and visually appealing.",
+    "title": "FitLife - Your Smart Fitness Companion",
+    "expected_template": "business",
+    "expected_slides": 9,
+    "visual_elements": ["chart", "image", "diagram"],
+    "complexity": "intermediate"
+  }
+}

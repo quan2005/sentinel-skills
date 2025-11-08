@@ -1,0 +1,227 @@
+{
+  "name": "skills-collection",
+  "displayName": "Skills Collection by Francis",
+  "description": "A comprehensive collection of Claude Code skills for MCP development, presentation creation, and more",
+  "version": "1.0.0",
+  "author": {
+    "name": "Francis",
+    "url": "https://github.com/quan2005"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quan2005/skills"
+  },
+  "homepage": "https://github.com/quan2005/skills#readme",
+  "keywords": [
+    "claude-code",
+    "skills",
+    "mcp",
+    "fastmcp",
+    "slidev",
+    "presentation",
+    "development-tools"
+  ],
+  "skills": [
+    {
+      "name": "fastmcp-app-creator",
+      "displayName": "FastMCP App Creator",
+      "description": "Create professional MCP (Model Context Protocol) applications using FastMCP 2.x framework and uv package manager with complete workflow from design to production-ready deployment",
+      "version": "1.0.0",
+      "category": "Development Tools",
+      "tags": [
+        "mcp",
+        "fastmcp",
+        "python",
+        "api-development",
+        "server",
+        "uv"
+      ],
+      "author": "Francis",
+      "license": "MIT",
+      "homepage": "https://github.com/quan2005/skills/tree/main/skills/fastmcp-app-creator",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/quan2005/skills/tree/main/skills/fastmcp-app-creator"
+      },
+      "main": "skills/fastmcp-app-creator/SKILL.md",
+      "files": [
+        "skills/fastmcp-app-creator/**/*"
+      ],
+      "engines": {
+        "claude-code": ">=1.0.0"
+      },
+      "capabilities": [
+        "mcp-server-generation",
+        "fastmcp-2.x-support",
+        "uv-package-management",
+        "security-best-practices",
+        "api-integration",
+        "database-connectivity",
+        "file-processing",
+        "testing-automation",
+        "documentation-generation"
+      ],
+      "useCases": [
+        "Create MCP applications from design documents",
+        "Generate FastMCP 2.x compliant servers",
+        "Build production-ready MCP apps with proper security",
+        "Integrate with external APIs and databases",
+        "Process various file formats securely",
+        "Deploy with streamableHttp configuration"
+      ],
+      "dependencies": {
+        "python": ">=3.8",
+        "uv": "latest",
+        "fastmcp": ">=2.0.0"
+      },
+      "installation": {
+        "type": "builtin",
+        "instructions": "This skill is built into Claude Code and automatically available"
+      },
+      "documentation": {
+        "readme": "skills/fastmcp-app-creator/SKILL.md",
+        "examples": [
+          "skills/fastmcp-app-creator/assets/templates/",
+          "skills/fastmcp-app-creator/references/"
+        ]
+      },
+      "changelog": [
+        {
+          "version": "1.0.0",
+          "date": "2025-11-08",
+          "changes": [
+            "Initial release of FastMCP App Creator skill",
+            "Support for FastMCP 2.x framework",
+            "Complete MCP app generation workflow",
+            "Security best practices implementation",
+            "Multiple app type templates (Basic, Web API, Database, File Processor)"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "slidev-ppt-creator",
+      "displayName": "Slidev PPT Creator",
+      "description": "Create professional, feature-rich presentations using Slidev framework with automatic template recommendation, visual element generation, and multiple input methods",
+      "version": "1.0.0",
+      "category": "Productivity",
+      "tags": [
+        "slidev",
+        "presentation",
+        "ppt",
+        "visualization",
+        "charts",
+        "diagrams",
+        "business",
+        "technical"
+      ],
+      "author": "Francis",
+      "license": "MIT",
+      "homepage": "https://github.com/quan2005/skills/tree/main/skills/slidev-ppt-creator",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/quan2005/skills/tree/main/skills/slidev-ppt-creator"
+      },
+      "main": "skills/slidev-ppt-creator/SKILL.md",
+      "files": [
+        "skills/slidev-ppt-creator/**/*"
+      ],
+      "engines": {
+        "claude-code": ">=1.0.0"
+      },
+      "capabilities": [
+        "automatic-template-selection",
+        "content-organization",
+        "visual-element-generation",
+        "chart-creation",
+        "diagram-generation",
+        "multi-format-export",
+        "interactive-creation",
+        "theme-customization"
+      ],
+      "useCases": [
+        "Create business presentations automatically",
+        "Generate technical talks with code highlighting",
+        "Build educational training materials",
+        "Convert ideas into professional slides",
+        "Generate charts and diagrams from data",
+        "Export presentations to multiple formats (PDF, PPTX, PNG, web)"
+      ],
+      "dependencies": {
+        "node": ">=16.0.0",
+        "npm": ">=8.0.0",
+        "slidev": "latest"
+      },
+      "installation": {
+        "type": "builtin",
+        "instructions": "This skill is built into Claude Code and automatically available"
+      },
+      "documentation": {
+        "readme": "skills/slidev-ppt-creator/SKILL.md",
+        "examples": [
+          "skills/slidev-ppt-creator/assets/templates/",
+          "skills/slidev-ppt-creator/references/"
+        ]
+      },
+      "changelog": [
+        {
+          "version": "1.0.0",
+          "date": "2025-11-08",
+          "changes": [
+            "Initial release of Slidev PPT Creator skill",
+            "Support for multiple presentation types (business, technical, educational, general)",
+            "Automatic template recommendation system",
+            "Visual element generation (charts, diagrams, architecture diagrams)",
+            "Multiple input methods (simple description, structured input, interactive)"
+          ]
+        }
+      ]
+    }
+  ],
+  "publishConfig": {
+    "registry": "https://registry.claude-code.com",
+    "access": "public"
+  },
+  "scripts": {
+    "validate": "claude-code validate-skills",
+    "test": "claude-code test-skills",
+    "build": "claude-code build-skills",
+    "publish": "claude-code publish-skills"
+  },
+  "devDependencies": {
+    "claude-code-cli": "latest"
+  },
+  "claudeCode": {
+    "minimumVersion": "1.0.0",
+    "supportedPlatforms": ["darwin", "linux", "win32"],
+    "permissions": [
+      "file-system-read",
+      "file-system-write",
+      "network-access",
+      "process-execution"
+    ]
+  },
+  "quality": {
+    "codeCoverage": 90,
+    "documentationCoverage": 95,
+    "testsPassing": true,
+    "lintingPassed": true
+  },
+  "security": {
+    "noUnsafeCode": true,
+    "noExternalDependencies": false,
+    "permissionModel": "explicit",
+    "dataHandling": "local-only"
+  },
+  "support": {
+    "issues": "https://github.com/quan2005/skills/issues",
+    "discussions": "https://github.com/quan2005/skills/discussions",
+    "documentation": "https://github.com/quan2005/skills/blob/main/README.md"
+  },
+  "contributing": {
+    "guidelines": "https://github.com/quan2005/skills/blob/main/CONTRIBUTING.md",
+    "codeOfConduct": "https://github.com/quan2005/skills/blob/main/CODE_OF_CONDUCT.md"
+  },
+  "releaseNotes": "Initial release of the Skills Collection package featuring FastMCP App Creator and Slidev PPT Creator skills for comprehensive MCP development and presentation creation workflows."
+}
