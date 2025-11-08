@@ -1,0 +1,33 @@
+{
+  "name": "ppt-builder-skill",
+  "version": "1.0.0",
+  "description": "PPT Builder Skill - Create rich presentations with Slidev",
+  "main": "scripts/generate-ppt.py",
+  "scripts": {
+    "build": "python scripts/generate-ppt.py --config examples/config.json",
+    "dev": "slidev --open",
+    "build-export": "slidev build",
+    "export-pdf": "slidev export --format pdf",
+    "export-png": "slidev export --format png"
+  },
+  "keywords": [
+    "slidev",
+    "presentation",
+    "ppt",
+    "builder",
+    "claude-skill"
+  ],
+  "author": "Francis",
+  "license": "MIT",
+  "dependencies": {
+    "@slidev/cli": "^0.48.0",
+    "@slidev/theme-default": "^0.21.0",
+    "@slidev/theme-seriph": "^0.21.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.40.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
