@@ -1,0 +1,70 @@
+# Example URLs for Testing Document Converter
+
+# Simple Web Pages
+https://example.com
+https://httpbin.org/html
+https://jsonplaceholder.typicode.com
+
+# Blogs and Articles
+https://blog.samaltman.com/
+https://paulgraham.com/
+https://www.a16z.com/
+
+# Documentation Sites
+https://docs.python.org/3/tutorial/index.html
+https://developer.mozilla.org/en-US/docs/Web/HTML
+https://git-scm.com/doc
+
+# News and Media
+https://news.ycombinator.com/
+https://www.reuters.com/
+https://techcrunch.com/
+
+# Technical Content
+https://github.com/readme/guides
+https://www.w3.org/TR/html52/
+https://tools.ietf.org/html/
+
+# Educational Content
+https://www.tutorialspoint.com/
+https://www.w3schools.com/
+https://developer.mozilla.org/en-US/docs/Learn
+
+# API Documentation
+https://api.openai.com/docs
+https://docs.github.com/en/rest
+https://cloud.google.com/docs
+
+# Academic Papers
+https://arxiv.org/
+https://scholar.google.com/
+
+# Product Pages
+https://www.apple.com/
+https://www.microsoft.com/
+
+# Government Sites
+https://www.whitehouse.gov/
+https://www.gov.uk/
+
+# Forums and Communities
+https://stackoverflow.com/
+https://www.reddit.com/
+
+# Video Platforms (for testing metadata extraction)
+https://www.youtube.com/
+https://vimeo.com/
+
+# Social Media (may have access restrictions)
+https://twitter.com/
+https://www.linkedin.com/
+
+# E-commerce
+https://www.amazon.com/
+https://www.ebay.com/
+
+# Note: Some URLs may require additional parameters or options for optimal extraction:
+# - Use --remove-selector for news sites to remove ads and sidebars
+# - Use --target-selector for documentation sites to focus on main content
+# - Use --timeout for complex pages with heavy JavaScript
+# - Use --with-iframe for pages with embedded content
