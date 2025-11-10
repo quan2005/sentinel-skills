@@ -51,19 +51,25 @@ python scripts/converter.py "document.pdf" \
   --output "converted.md"
 ```
 
-### URL Conversion (Local Processing)
+### URL Conversion with Crawl4AI
 
-Convert URLs by downloading and processing locally:
+Convert web pages to Markdown using intelligent crawling:
 
 ```bash
-python scripts/converter.py "https://example.com/document.pdf"
+python scripts/converter.py "https://example.com/blog"
 ```
+
+Crawl4AI provides intelligent web page extraction:
+- **JavaScript Rendering**: Handles dynamic content and SPAs
+- **Content Filtering**: Automatically removes ads and overlays
+- **Smart Extraction**: Identifies main content areas
+- **Modern Web Support**: Works with React, Vue, Angular applications
 
 ## Core Components
 
 ### Scripts
 
-- **`scripts/converter.py`**: Local conversion engine using markitdown tool. Handles file processing, URL downloads, and advanced conversion options with complete privacy.
+- **`scripts/converter.py`**: Local conversion engine using markitdown tool for files and Crawl4AI for URLs. Handles file processing, intelligent web crawling, and advanced conversion options with complete privacy.
 
 ### References
 
@@ -83,7 +89,7 @@ python scripts/converter.py "https://example.com/document.pdf"
 3. **Tool Detection**: Ensure markitdown is available in the system PATH
 4. **Local Processing**: Execute markitdown with specified options
 5. **Content Extraction**: Parse markitdown output and extract metadata
-6. **URL Handling** (if needed): Download content to temporary file, process locally, clean up
+6. **URL Handling** (if needed): Use Crawl4AI for intelligent web crawling, process locally with JavaScript rendering
 7. **Error Handling**: Manage local processing errors gracefully
 8. **Output Formatting**: Return structured results or save to specified file
 
@@ -107,7 +113,11 @@ python scripts/converter.py "https://example.com/document.pdf"
 - Plain text files (.txt)
 
 **Web Content**:
-- HTML files (.html, .htm) - downloaded and processed locally
+- **Modern Web Pages**: Processed with Crawl4AI for JavaScript rendering
+- **Single Page Applications**: React, Vue, Angular applications
+- **Dynamic Content**: Pages with AJAX-loaded content
+- **Static HTML**: Traditional web pages
+- **Blog Posts**: News articles and blog platforms
 
 **Other Formats**:
 - Markdown files (.md) - for validation and cleaning
@@ -121,15 +131,54 @@ python scripts/converter.py "https://example.com/document.pdf"
 - **Temporary File Cleanup**: Automatic cleanup of downloaded URL content
 - **Privacy by Design**: All conversion happens using local markitdown tool
 - **Size Limits**: Configurable file size limits for local processing
-- **No External Dependencies**: All processing done with installed markitdown tool
+- **No External Dependencies**: All processing done with installed markitdown tool and Crawl4AI
+
+## Crawl4AI Integration
+
+### Intelligent Web Crawling
+
+Crawl4AI provides advanced web crawling capabilities:
+
+- **JavaScript Rendering**: Full browser automation for dynamic content
+- **Content Extraction**: Automatic identification of main content areas
+- **Noise Filtering**: Removes ads, popups, and irrelevant elements
+- **SPA Support**: Handles modern JavaScript applications
+- **Privacy**: All crawling happens locally with headless browser
+
+### Crawl4AI Options
+
+- **`--wait-time`**: Page load wait time in milliseconds (default: 2000)
+- **`--remove-overlays`**: Remove popups and overlays (default: enabled)
+- **`--simulate-user`**: Simulate user behavior for better access (default: enabled)
+- **`--bypass-cache`**: Get fresh content (default: enabled)
+- **`--verbose-crawling`**: Enable detailed crawling output
+
+### Advanced URL Processing
+
+```bash
+# Basic web page conversion
+python scripts/converter.py "https://example.com/article"
+
+# Wait longer for slow-loading pages
+python scripts/converter.py "https://slow-site.com" --wait-time 5000
+
+# Preserve overlays for specific sites
+python scripts/converter.py "https://example.com" --no-remove-overlays
+
+# Verbose crawling for debugging
+python scripts/converter.py "https://example.com" --verbose-crawling --json
+```
 
 ## Error Handling and Troubleshooting
 
 Common local processing errors and solutions:
 
 - **markitdown not found**: Install with `pip install markitdown`
+- **Crawl4AI not found**: Install with `pip install crawl4ai`
 - **File not found**: Verify file path and permissions
 - **Processing timeout**: File may be too complex or large
+- **Crawling failed**: Check URL accessibility and wait time
+- **JavaScript errors**: Increase wait time or disable overlay removal
 - **Permission denied**: Check file and directory permissions
 - **Memory issues**: File may be too large for available memory
 
@@ -160,10 +209,13 @@ Refer to `references/error_handling.md` for detailed troubleshooting steps.
 ### Prerequisites
 
 ```bash
-# Install markitdown tool
+# Install markitdown tool for file conversion
 pip install markitdown
 
-# Optional: For URL conversion capabilities
+# Install Crawl4AI for intelligent web crawling
+pip install crawl4ai
+
+# Optional: For additional URL handling
 pip install requests
 ```
 
@@ -171,8 +223,10 @@ pip install requests
 
 - Python 3.7 or higher
 - markitdown tool installed and in PATH
+- Crawl4AI installed for web crawling
 - Sufficient disk space for temporary files
 - Appropriate memory for document processing
+- Browser dependencies for Crawl4AI (automatically installed)
 
 ## Usage Examples
 
@@ -193,9 +247,19 @@ python scripts/converter.py "presentation.pptx" \
   --use-plugins \
   --output "complete.md"
 
-# URL conversion with local processing
-python scripts/converter.py "https://example.com/document.pdf" \
-  --output "downloaded.md"
+# URL conversion with Crawl4AI crawling
+python scripts/converter.py "https://example.com/blog" \
+  --output "blog.md"
+
+# URL conversion with custom wait time for slow pages
+python scripts/converter.py "https://slow-loading-site.com" \
+  --wait-time 5000 \
+  --output "content.md"
+
+# URL conversion with verbose output for debugging
+python scripts/converter.py "https://example.com" \
+  --verbose-crawling \
+  --json
 ```
 
 ### Document Intelligence Integration

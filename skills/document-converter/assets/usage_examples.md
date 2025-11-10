@@ -83,26 +83,71 @@ python3 scripts/converter.py "text_file.txt" \
   --output "converted.md"
 ```
 
-## URL Processing (Local Download and Convert)
+## URL Processing with Crawl4AI
 
-### Download and Convert URLs
+### Intelligent Web Crawling
 ```bash
-# Convert URL content locally
-python3 scripts/converter.py "https://example.com/document.pdf" \
-  --output "downloaded.md"
+# Convert web page to Markdown
+python3 scripts/converter.py "https://example.com/blog" \
+  --output "blog.md"
 
-# URL conversion with options
-python3 scripts/converter.py "https://example.com/presentation.pptx" \
-  --use-plugins \
-  --output "url_slides.md"
+# Handle JavaScript-heavy pages
+python3 scripts/converter.py "https://spa-example.com" \
+  --wait-time 5000 \
+  --output "spa_content.md"
+
+# Modern web applications
+python3 scripts/converter.py "https://react-app.com" \
+  --simulate-user \
+  --remove-overlays \
+  --output "react_content.md"
 ```
 
-### Secure URL Processing
+### Advanced Crawling Options
 ```bash
-# All URL content is downloaded and processed locally
-python3 scripts/converter.py "https://confidential-site.com/report.pdf" \
-  --keep-data-uris \
-  --output "secure_report.md"
+# Verbose crawling for debugging
+python3 scripts/converter.py "https://example.com" \
+  --verbose-crawling \
+  --json
+
+# Preserve overlays for specific sites
+python3 scripts/converter.py "https://news-site.com" \
+  --no-remove-overlays \
+  --output "news_content.md"
+
+# Use cache for repeated requests
+python3 scripts/converter.py "https://example.com" \
+  --no-bypass-cache \
+  --output "cached_content.md"
+```
+
+### Batch URL Processing
+```bash
+#!/bin/bash
+# batch_crawl.sh
+
+urls=(
+  "https://example.com/article1"
+  "https://example.com/article2"
+  "https://news.example.com/story"
+)
+
+for url in "${urls[@]}"; do
+    echo "Crawling: $url"
+    python3 scripts/converter.py "$url" \
+      --wait-time 3000 \
+      --remove-overlays \
+      --output "crawled/$(basename "$url").md"
+done
+```
+
+### Crawl4AI with File Downloads
+```bash
+# For URLs that point to downloadable files, Crawl4AI will handle them appropriately
+python3 scripts/converter.py "https://example.com/document.pdf" \
+  --output "downloaded_doc.md"
+
+# Crawl4AI automatically detects file types and uses appropriate processing
 ```
 
 ## Utility Functions
