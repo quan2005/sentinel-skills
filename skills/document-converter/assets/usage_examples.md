@@ -1,335 +1,549 @@
-# Usage Examples
+# Local Document Converter Usage Examples
 
-This document provides practical examples of using the Document Converter skill for various scenarios.
+This document provides practical examples of using the Document Converter skill with the local markitdown tool for secure, private document processing.
 
-## Basic Web Page Conversion
-
-### Convert a Blog Post
-```bash
-python scripts/converter.py "https://blog.samaltman.com/"
-```
-
-### Convert with Custom Output File
-```bash
-python scripts/converter.py "https://paulgraham.com/articles.html" --output "pg_articles.md"
-```
-
-### Convert JSON Response
-```bash
-python scripts/converter.py "https://example.com" --json
-```
-
-## Advanced Web Page Processing
-
-### Clean Article Extraction
-```bash
-python scripts/converter.py "https://news.example.com/article" \
-  --target-selector "article" \
-  --remove-selector "nav, .ads, .social, .comments, .related" \
-  --remove-images
-```
-
-### Documentation Site Processing
-```bash
-python scripts/converter.py "https://docs.example.com/guide" \
-  --target-selector ".markdown-body, .documentation" \
-  --remove-selector ".sidebar, .navigation, .toc" \
-  --smart-selector \
-  --timeout 45000
-```
-
-### Handle Complex JavaScript Pages
-```bash
-python scripts/converter.py "https://app.example.com" \
-  --with-shadow-dom \
-  --with-iframe \
-  --timeout 60000
-```
-
-### Process Shortened URLs
-```bash
-python scripts/converter.py "https://bit.ly/example" \
-  --follow-redirects
-```
-
-## File Conversion Examples
+## Basic Local Conversion
 
 ### Convert PDF to Markdown
 ```bash
-python scripts/converter.py "document.pdf" --output "document.md"
+# Basic PDF conversion
+python3 scripts/converter.py "document.pdf"
+
+# Save to specific file
+python3 scripts/converter.py "document.pdf" --output "converted.md"
+
+# JSON output with metadata
+python3 scripts/converter.py "document.pdf" --json
 ```
 
-### Convert PowerPoint with Image Descriptions
+### Convert Office Documents
 ```bash
-python scripts/converter.py "presentation.pptx" \
-  --describe-images \
-  --output "slides_with_descriptions.md"
+# Word document
+python3 scripts/converter.py "report.docx" --output "report.md"
+
+# PowerPoint presentation
+python3 scripts/converter.py "slides.pptx" --output "slides.md"
+
+# Rich text format
+python3 scripts/converter.py "notes.rtf" --output "notes.md"
 ```
 
-### Convert Word Document
+### Convert Image Files with OCR
 ```bash
-python scripts/converter.py "report.docx" \
-  --target-selector ".content" \
-  --remove-images \
-  --output "report_text.md"
+# Convert scanned PDF or image
+python3 scripts/converter.py "scan.jpg" --output "text_content.md"
+
+# Multiple image formats supported
+python3 scripts/converter.py "chart.png" --output "chart_text.md"
 ```
 
-### Fast PDF Text Extraction
+## Advanced Local Processing
+
+### Use Plugins for Enhanced Conversion
 ```bash
-python scripts/converter.py "large_document.pdf" \
-  --pdf-fast-parse \
-  --timeout 60000 \
-  --output "large_document_text.md"
+# Enable third-party plugins
+python3 scripts/converter.py "complex_document.pdf" \
+  --use-plugins \
+  --output "enhanced.md"
+
+# Combine multiple options
+python3 scripts/converter.py "presentation.pptx" \
+  --use-plugins \
+  --keep-data-uris \
+  --output "complete_slides.md"
 ```
 
-## Network and Performance Options
-
-### Use Proxy for Restricted Content
+### Preserve Images as Data URIs
 ```bash
-python scripts/converter.py "https://internal.company.com" \
-  --proxy-url "http://proxy.company.com:8080"
+# Keep base64-encoded images in output
+python3 scripts/converter.py "image_heavy.pdf" \
+  --keep-data-uris \
+  --output "with_images.md"
 ```
 
-### Handle Slow Pages
+### Document Intelligence Integration
 ```bash
-python scripts/converter.py "https://slow.example.com" \
-  --timeout 60000
+# Use Azure Document Intelligence for enhanced OCR
+python3 scripts/converter.py "scan.pdf" \
+  --use-docintel \
+  --endpoint "https://your-endpoint.cognitiveservices.azure.com/" \
+  --output "enhanced_ocr.md"
 ```
 
-### Use Test Environment
+### Format Hints for Better Conversion
 ```bash
-python scripts/converter.py "https://example.com" --test
+# Provide MIME type hint
+python3 scripts/converter.py "unknown_file" \
+  --mime-type "application/pdf" \
+  --output "converted.md"
+
+# Provide character set hint
+python3 scripts/converter.py "text_file.txt" \
+  --charset "UTF-8" \
+  --output "converted.md"
 ```
 
-## Complex Combinations
+## URL Processing (Local Download and Convert)
 
-### Academic Paper Processing
+### Download and Convert URLs
 ```bash
-python scripts/converter.py "https://arxiv.org/abs/2301.07041" \
-  --target-selector ".ltx_page_main" \
-  --remove-selector ".ltx_page_nav, .abs affiliations" \
-  --describe-images \
-  --timeout 45000 \
-  --output "academic_paper.md"
+# Convert URL content locally
+python3 scripts/converter.py "https://example.com/document.pdf" \
+  --output "downloaded.md"
+
+# URL conversion with options
+python3 scripts/converter.py "https://example.com/presentation.pptx" \
+  --use-plugins \
+  --output "url_slides.md"
 ```
 
-### E-commerce Product Page
+### Secure URL Processing
 ```bash
-python scripts/converter.py "https://shop.example.com/product" \
-  --target-selector ".product-description, .specifications" \
-  --remove-selector ".reviews, .related-products, .ads" \
-  --remove-images \
-  --output "product_info.md"
+# All URL content is downloaded and processed locally
+python3 scripts/converter.py "https://confidential-site.com/report.pdf" \
+  --keep-data-uris \
+  --output "secure_report.md"
 ```
 
-### News Article Extraction
+## Utility Functions
+
+### Check Supported Formats
 ```bash
-python scripts/converter.py "https://news.example.com/story" \
-  --target-selector "article" \
-  --remove-selector "header, footer, .sidebar, .newsletter, .trending" \
-  --smart-selector \
-  --timeout 30000 \
-  --output "news_article.md"
+# List all supported file formats
+python3 scripts/converter.py --list-formats
 ```
 
-### Technical Documentation
+### Check Markitdown Version
 ```bash
-python scripts/converter.py "https://docs.example.com/api" \
-  --target-selector ".api-docs, .markdown-body" \
-  --remove-selector ".navigation, .breadcrumb, .edit-link" \
-  --with-iframe \
-  --timeout 45000 \
-  --output "api_docs.md"
+# Show markitdown version
+python3 scripts/converter.py --markitdown-version
+```
+
+## Batch Processing Examples
+
+### Process Multiple Files
+```bash
+#!/bin/bash
+# batch_convert.sh
+
+for file in *.pdf *.docx *.pptx; do
+    if [ -f "$file" ]; then
+        echo "Converting $file..."
+        output_name="${file%.*}.md"
+        python3 scripts/converter.py "$file" \
+          --output "converted/$output_name" \
+          --use-plugins
+    fi
+done
+```
+
+### Process with Different Options
+```bash
+#!/bin/bash
+# advanced_batch.sh
+
+# PDFs with plugins
+for pdf in *.pdf; do
+    python3 scripts/converter.py "$pdf" \
+      --use-plugins \
+      --output "pdf_converted/${pdf%.pdf}.md"
+done
+
+# Images with data URIs preserved
+for img in *.jpg *.png; do
+    python3 scripts/converter.py "$img" \
+      --keep-data-uris \
+      --output "img_converted/${img%.*}.md"
+done
+```
+
+## Python Integration Examples
+
+### Basic Python Usage
+```python
+#!/usr/bin/env python3
+from scripts.converter import DocumentConverter
+
+# Create converter instance
+converter = DocumentConverter()
+
+# Convert a file
+result = converter.convert_file('document.pdf', use_plugins=True)
+
+if result['status'] == 'success':
+    print(f"Title: {result['title']}")
+    print(f"File size: {result['file_size']} bytes")
+    print(f"Content length: {len(result['content'])} characters")
+
+    # Save content
+    with open('output.md', 'w', encoding='utf-8') as f:
+        f.write(result['content'])
+else:
+    print(f"Error: {result['error']}")
+```
+
+### Advanced Python Integration
+```python
+#!/usr/bin/env python3
+from scripts.converter import DocumentConverter
+import json
+from pathlib import Path
+
+def convert_directory(input_dir, output_dir):
+    """Convert all supported files in a directory"""
+    converter = DocumentConverter()
+    input_path = Path(input_dir)
+    output_path = Path(output_dir)
+
+    # Create output directory
+    output_path.mkdir(exist_ok=True)
+
+    # Supported extensions
+    extensions = ['.pdf', '.docx', '.doc', '.pptx', '.ppt', '.txt', '.rtf']
+
+    results = []
+
+    for file_path in input_path.rglob('*'):
+        if file_path.suffix.lower() in extensions:
+            print(f"Converting {file_path.name}...")
+
+            result = converter.convert_file(
+                file_path,
+                use_plugins=True,
+                keep_data_uris=True
+            )
+
+            if result['status'] == 'success':
+                # Save converted content
+                output_file = output_path / f"{file_path.stem}.md"
+                output_file.write_text(result['content'], encoding='utf-8')
+
+                results.append({
+                    'original_file': file_path.name,
+                    'output_file': str(output_file),
+                    'title': result['title'],
+                    'file_size': result['file_size']
+                })
+            else:
+                results.append({
+                    'original_file': file_path.name,
+                    'error': result['error']
+                })
+
+    # Save results summary
+    with open(output_path / 'conversion_results.json', 'w') as f:
+        json.dump(results, f, indent=2)
+
+    return results
+
+# Usage
+if __name__ == '__main__':
+    results = convert_directory('documents', 'converted_docs')
+    print(f"Converted {len([r for r in results if 'error' not in r])} files successfully")
+```
+
+## Security and Privacy Examples
+
+### Convert Sensitive Documents
+```bash
+# All processing happens locally - no external data transmission
+python3 scripts/converter.py "confidential_report.pdf" \
+  --output "secure_conversion.md"
+
+# Process financial documents privately
+python3 scripts/converter.py "financial_data.xlsx" \
+  --output "financial_analysis.md"
+
+# Convert legal documents securely
+python3 scripts/converter.py "legal_contract.docx" \
+  --output "contract_text.md"
+```
+
+### Offline Processing
+```bash
+# Works completely offline - no internet required
+python3 scripts/converter.py "local_document.pdf" --output "offline_convert.md"
+
+# Batch process without network access
+for file in /path/to/documents/*.{pdf,docx,pptx}; do
+    python3 scripts/converter.py "$file" \
+      --output "/path/to/converted/$(basename "$file").md"
+done
+```
+
+## Error Handling Examples
+
+### Robust Error Handling
+```python
+#!/usr/bin/env python3
+from scripts.converter import DocumentConverter
+import sys
+
+def safe_convert_with_retry(file_path, max_retries=3):
+    """Convert file with retry logic and error handling"""
+    converter = DocumentConverter()
+
+    for attempt in range(max_retries):
+        try:
+            result = converter.convert_file(file_path, use_plugins=True)
+
+            if result['status'] == 'success':
+                return result
+            else:
+                print(f"Attempt {attempt + 1} failed: {result['error']}")
+
+        except Exception as e:
+            print(f"Attempt {attempt + 1} error: {str(e)}")
+
+    print(f"Failed to convert {file_path} after {max_retries} attempts")
+    return None
+
+# Usage
+result = safe_convert_with_retry('problematic_file.pdf')
+if result:
+    print("Conversion successful!")
+else:
+    print("Conversion failed")
+```
+
+### Validate Before Conversion
+```python
+#!/usr/bin/env python3
+from scripts.converter import DocumentConverter
+from pathlib import Path
+
+def validate_and_convert(file_path):
+    """Validate file before conversion"""
+    file_path = Path(file_path)
+
+    # Check if file exists
+    if not file_path.exists():
+        return {'error': 'File does not exist'}
+
+    # Check file size (limit to 50MB for example)
+    max_size = 50 * 1024 * 1024  # 50MB
+    if file_path.stat().st_size > max_size:
+        return {'error': f'File too large: {file_path.stat().st_size / (1024*1024):.1f}MB'}
+
+    # Check file extension
+    supported_extensions = ['.pdf', '.docx', '.doc', '.pptx', '.ppt', '.txt', '.rtf']
+    if file_path.suffix.lower() not in supported_extensions:
+        return {'error': f'Unsupported file type: {file_path.suffix}'}
+
+    # Convert if validation passes
+    converter = DocumentConverter()
+    return converter.convert_file(file_path)
+
+# Usage
+result = validate_and_convert('document.pdf')
+if result['status'] == 'success':
+    print("Conversion successful!")
+else:
+    print(f"Validation failed: {result['error']}")
+```
+
+## Performance Optimization Examples
+
+### Large File Processing
+```bash
+# Process large files with specific settings
+python3 scripts/converter.py "large_document.pdf" \
+  --timeout 600 \
+  --output "large_converted.md"
+
+# Monitor memory usage (Linux/macOS)
+python3 scripts/converter.py "huge_file.pdf" &
+PID=$!
+while kill -0 $PID 2>/dev/null; do
+    ps -p $PID -o pid,ppid,cmd,%mem,%cpu --no-headers
+    sleep 5
+done
+```
+
+### Parallel Processing
+```python
+#!/usr/bin/env python3
+import concurrent.futures
+from scripts.converter import DocumentConverter
+from pathlib import Path
+
+def parallel_convert(file_paths, max_workers=4):
+    """Convert multiple files in parallel"""
+    converter = DocumentConverter()
+
+    def convert_single(file_path):
+        return converter.convert_file(file_path, use_plugins=True)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(convert_single, path): path for path in file_paths}
+
+        results = {}
+        for future in concurrent.futures.as_completed(futures):
+            file_path = futures[future]
+            try:
+                result = future.result()
+                results[file_path] = result
+            except Exception as e:
+                results[file_path] = {'error': str(e)}
+
+    return results
+
+# Usage
+if __name__ == '__main__':
+    file_paths = list(Path('documents').glob('*.pdf'))
+    results = parallel_convert(file_paths[:10])  # Process first 10 files
+
+    for file_path, result in results.items():
+        if result['status'] == 'success':
+            print(f"✅ {file_path.name}: Conversion successful")
+        else:
+            print(f"❌ {file_path.name}: {result['error']}")
+```
+
+## Integration with Workflows
+
+### Git Hook Integration
+```bash
+#!/bin/bash
+# .git/hooks/pre-commit - Convert documents before commit
+
+# Convert any PDFs in the commit
+for pdf in $(git diff --cached --name-only --diff-filter=ACM | grep '\.pdf$'); do
+    echo "Converting $pdf to Markdown..."
+    python3 scripts/converter.py "$pdf" \
+      --output "docs/${pdf%.pdf}.md"
+    git add "docs/${pdf%.pdf}.md"
+done
+
+exit 0
+```
+
+### Makefile Integration
+```makefile
+# Makefile for document processing
+
+.PHONY: convert-docs clean-docs
+
+DOCS_DIR = documents
+OUTPUT_DIR = converted
+
+convert-docs:
+	@echo "Converting all documents..."
+	@mkdir -p $(OUTPUT_DIR)
+	@for file in $(DOCS_DIR)/*.{pdf,docx,pptx,txt}; do \
+		if [ -f "$$file" ]; then \
+			echo "Converting $$file..."; \
+			python3 scripts/converter.py "$$file" \
+				--output "$(OUTPUT_DIR)/$$(basename $$file | cut -d. -f1).md"; \
+		fi; \
+	done
+
+clean-docs:
+	@echo "Cleaning converted files..."
+	@rm -rf $(OUTPUT_DIR)
+
+help:
+	@echo "Available targets:"
+	@echo "  convert-docs - Convert all documents to Markdown"
+	@echo "  clean-docs   - Remove converted files"
+	@echo "  help         - Show this help"
+```
+
+### CI/CD Pipeline Integration
+```yaml
+# .github/workflows/convert-docs.yml
+name: Convert Documents
+
+on:
+  push:
+    paths:
+      - 'documents/**'
+    branches: [ main ]
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    - name: Install markitdown
+      run: pip install markitdown
+
+    - name: Convert documents
+      run: |
+        mkdir -p converted_docs
+        for file in documents/*.{pdf,docx,pptx,txt}; do
+          if [ -f "$file" ]; then
+            python3 skills/document-converter/scripts/converter.py "$file" \
+              --output "converted_docs/$(basename "$file" | cut -d. -f1).md"
+          fi
+        done
+
+    - name: Upload converted documents
+      uses: actions/upload-artifact@v2
+      with:
+        name: converted-documents
+        path: converted_docs/
 ```
 
 ## Troubleshooting Examples
 
-### When No Content is Extracted
+### Debug Conversion Issues
 ```bash
-# Try different approaches
-python scripts/converter.py "https://example.com" --no-smart-selector
-python scripts/converter.py "https://example.com" --target-selector "body"
-python scripts/converter.py "https://example.com" --target-selector "main, .content, article"
+# Check markitdown installation
+which markitdown
+markitdown --version
+
+# Test with simple file
+echo "Test content" > test.txt
+python3 scripts/converter.py test.txt --json
+
+# Check file permissions
+ls -la document.pdf
+
+# Test different options
+python3 scripts/converter.py problem_file.pdf --use-plugins
+python3 scripts/converter.py problem_file.pdf --keep-data-uris
 ```
 
-### When Processing Times Out
+### Monitor Resource Usage
 ```bash
-# Simplify the page
-python scripts/converter.py "https://complex.example.com" \
-  --remove-selector "script, .ads, .social, .videos" \
-  --timeout 60000
+# Monitor conversion process
+python3 scripts/converter.py large_file.pdf &
+PID=$!
+top -pid $PID
 
-# Try fast processing
-python scripts/converter.py "document.pdf" --pdf-fast-parse
-```
+# Check disk space during conversion
+df -h
 
-### When Images Cause Issues
-```bash
-# Remove images completely
-python scripts/converter.py "https://image-heavy.example.com" --remove-images
-
-# Or describe images instead
-python scripts/converter.py "https://image-heavy.example.com" --describe-images --remove-images
-```
-
-## Batch Processing (Bash Script)
-
-```bash
-#!/bin/bash
-# batch_convert.sh - Convert multiple URLs
-
-urls=(
-  "https://blog.example.com/post1"
-  "https://blog.example.com/post2"
-  "https://docs.example.com/guide"
-  "https://news.example.com/story"
-)
-
-for url in "${urls[@]}"; do
-  echo "Converting: $url"
-  python scripts/converter.py "$url" \
-    --target-selector "article, .content" \
-    --remove-selector "nav, .ads, .social" \
-    --timeout 30000 \
-    --output "converted/$(basename "$url").md"
-done
-```
-
-## Python Integration
-
-```python
-#!/usr/bin/env python3
-# convert_multiple.py - Python script for batch conversion
-
-import sys
-import os
-sys.path.append('scripts')
-from converter import DocumentConverter
-
-def convert_urls(urls, output_dir="converted"):
-    converter = DocumentConverter()
-
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    for url in urls:
-        print(f"Converting: {url}")
-        result = converter.convert_url_get(
-            url,
-            target_selector="article, .content",
-            remove_selector="nav, .ads, .social",
-            timeout=30000
-        )
-
-        if result.get('status') == 'success':
-            filename = url.replace('https://', '').replace('/', '_') + '.md'
-            filepath = os.path.join(output_dir, filename)
-
-            with open(filepath, 'w', encoding='utf-8') as f:
-                f.write(result.get('content', ''))
-            print(f"✅ Saved to: {filepath}")
-        else:
-            print(f"❌ Failed: {result.get('error')}")
-
-if __name__ == '__main__':
-    urls = [
-        "https://blog.example.com/post1",
-        "https://docs.example.com/guide"
-    ]
-    convert_urls(urls)
-```
-
-## Integration with Other Tools
-
-### Combine with Pandoc for Further Processing
-```bash
-# Convert to Markdown, then to other formats
-python scripts/converter.py "https://example.com" --output temp.md
-pandoc temp.md -o output.docx
-pandoc temp.md -o output.pdf
-pandoc temp.md -o output.html
-```
-
-### Use with Git for Documentation Backup
-```bash
-# Convert documentation site and commit to git
-python scripts/converter.py "https://docs.example.com" --output docs.md
-git add docs.md
-git commit -m "Update documentation from website"
-git push
-```
-
-### Integrate with Obsidian
-```bash
-# Convert web content to Obsidian vault
-python scripts/converter.py "https://example.com" \
-  --output "~/Obsidian/Vault/Web Content/example.md"
-```
-
-## Configuration File Example
-
-Create a `.env` file for default settings:
-
-```bash
-# .env
-DEFAULT_TIMEOUT=45000
-DEFAULT_REMOVE_IMAGES=true
-DEFAULT_TARGET_SELECTOR=article
-DEFAULT_REMOVE_SELECTOR=nav, .ads, .social
-PROXY_URL=http://proxy.company.com:8080
-USE_TEST_ENV=false
-```
-
-Then use with a wrapper script:
-
-```python
-#!/usr/bin/env python3
-# convert_with_config.py
-
-import os
-from dotenv import load_dotenv
-from converter import DocumentConverter
-
-load_dotenv()
-
-def convert_with_defaults(url, **options):
-    # Set defaults from environment
-    defaults = {
-        'timeout': os.getenv('DEFAULT_TIMEOUT', 30000),
-        'remove_images': os.getenv('DEFAULT_REMOVE_IMAGES', 'false').lower() == 'true',
-        'target_selector': os.getenv('DEFAULT_TARGET_SELECTOR'),
-        'remove_selector': os.getenv('DEFAULT_REMOVE_SELECTOR'),
-        'proxy_url': os.getenv('PROXY_URL'),
-    }
-
-    # Override defaults with provided options
-    defaults.update(options)
-
-    # Remove None values
-    defaults = {k: v for k, v in defaults.items() if v is not None}
-
-    base_url = "http://knowledge-reader.external.bdp-testing-streaming.k8s.skyengine.com.cn:8000" \
-        if os.getenv('USE_TEST_ENV', 'false').lower() == 'true' \
-        else "https://reader-aigc.skyengine.com.cn"
-
-    converter = DocumentConverter(base_url)
-    return converter.convert_url_get(url, **defaults)
-
-# Usage
-result = convert_with_defaults(
-    "https://example.com",
-    describe_images=True,
-    output_file="example.md"
-)
+# Check memory usage
+ps aux | grep python3
 ```
 
 ## Best Practices Summary
 
-1. **Start Simple**: Use default options first, then add complexity as needed
-2. **Be Specific**: Use precise CSS selectors for better content extraction
-3. **Handle Timeouts**: Set appropriate timeouts for page complexity
-4. **Manage Images**: Remove images for speed or describe them for accessibility
-5. **Test Thoroughly**: Try different selector combinations for best results
-6. **Use JSON Output**: Enable JSON output for debugging and metadata
-7. **Implement Error Handling**: Check status codes and handle errors gracefully
-8. **Consider Performance**: Balance extraction quality with processing time
+### Security
+1. **Always process locally**: No external data transmission
+2. **Clean temporary files**: Automatic cleanup of downloads
+3. **Check file permissions**: Ensure proper access rights
+4. **Validate inputs**: Check file size and format before processing
+
+### Performance
+1. **Use appropriate options**: Enable plugins only when needed
+2. **Monitor resources**: Watch memory and disk usage for large files
+3. **Batch efficiently**: Process multiple files with consistent options
+4. **Handle timeouts**: Set appropriate timeout values for large documents
+
+### Quality
+1. **Test conversion quality**: Validate output for critical documents
+2. **Use format hints**: Provide MIME types for unknown files
+3. **Preserve data URIs**: Keep images when needed
+4. **Handle errors gracefully**: Implement retry logic for failed conversions
+
+These examples demonstrate the flexibility and security of the local markitdown-based Document Converter skill.

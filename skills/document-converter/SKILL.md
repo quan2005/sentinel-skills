@@ -1,137 +1,246 @@
 ---
 name: document-converter
-description: Convert PDF, PPT, DOCX, and web pages to Markdown format using a high-performance content parsing service. Handles complex page elements, intelligent content extraction, and advanced processing options.
+description: Convert PDF, PPT, DOCX, and other files to Markdown format using local markitdown tool. Ensures complete data privacy by processing all files locally without external API calls.
 ---
 
 # Document Converter
 
-Convert various document formats and web pages to structured Markdown format with intelligent content extraction and advanced processing capabilities.
+Convert various document formats to structured Markdown format using the local markitdown tool for complete data privacy and security.
 
 ## When to Use
 
 Use this skill when users need to:
 
-- Convert web pages (blogs, news, online docs) to Markdown
-- Extract content from PDF files as editable Markdown
-- Convert PowerPoint presentations to text format
-- Transform Word documents to Markdown
-- Process complex web pages with iframes or Shadow DOM
-- Extract specific content using CSS selectors
-- Handle large documents with timeout and proxy options
+- Convert local documents (PDF, PPT, DOCX) to Markdown securely
+- Process sensitive files without sending data to external services
+- Extract text content from various file formats
+- Convert web content by downloading and processing locally
+- Handle batch conversions with privacy assurance
+- Work with documents containing confidential information
 
 ## How to Use
 
-### Basic Web Page Conversion
+### Basic File Conversion
 
-To convert a web page URL to Markdown:
+To convert a local file to Markdown:
 
 1. Use the converter script from `scripts/converter.py`
-2. Call with the URL using GET method for simple conversion
-3. Receive structured Markdown output with title and content
+2. Provide the local file path as input
+3. Receive structured Markdown output locally processed
 
 ```bash
-python scripts/converter.py "https://blog.samaltman.com"
+python scripts/converter.py "document.pdf"
 ```
 
-### File Upload Conversion
+### File Conversion with Output
 
-To convert local files (PDF, PPT, DOCX):
-
-1. Use the converter script with file path
-2. Script automatically detects file type and uploads
-3. Process returns Markdown with extracted content
+To convert and save to specific file:
 
 ```bash
-python scripts/converter.py "presentation.pdf" --output slides.md
+python scripts/converter.py "presentation.pptx" --output "slides.md"
 ```
 
-### Advanced Conversion Options
+### Advanced Local Processing
 
-For complex pages requiring specific content extraction:
-
-1. Configure CSS selectors using `--target-selector` and `--remove-selector`
-2. Enable iframe parsing with `--with-iframe` for embedded content
-3. Use `--follow-redirects` for shortened URLs
-4. Adjust timeout with `--timeout` for slow-loading pages
+For enhanced conversion with markitdown options:
 
 ```bash
-python scripts/converter.py "https://docs.example.com" \
-  --target-selector "article" \
-  --remove-selector "nav,footer" \
-  --with-iframe \
-  --timeout 45000
+python scripts/converter.py "document.pdf" \
+  --use-plugins \
+  --keep-data-uris \
+  --output "converted.md"
+```
+
+### URL Conversion (Local Processing)
+
+Convert URLs by downloading and processing locally:
+
+```bash
+python scripts/converter.py "https://example.com/document.pdf"
 ```
 
 ## Core Components
 
 ### Scripts
 
-- **`scripts/converter.py`**: Main conversion engine handling URL conversion, file uploads, and advanced options. Supports both GET and POST methods with comprehensive error handling.
+- **`scripts/converter.py`**: Local conversion engine using markitdown tool. Handles file processing, URL downloads, and advanced conversion options with complete privacy.
 
 ### References
 
-- **`references/api_reference.md`**: Detailed API documentation including all endpoints, parameters, headers, and response formats
-- **`references/conversion_options.md`**: Complete guide to conversion options, CSS selectors, and advanced features
-- **`references/error_handling.md`**: Error codes, troubleshooting steps, and common solutions
+- **`references/api_reference.md`**: Markitdown tool documentation and command options
+- **`references/conversion_options.md`**: Complete guide to markitdown conversion features
+- **`references/error_handling.md`**: Error codes and troubleshooting for local processing
 
 ### Assets
 
-- **`assets/example_urls.txt`**: Collection of test URLs for different content types
-- **`assets/test_documents/`**: Sample files for testing conversion capabilities
+- **`assets/example_urls.txt`**: Collection of test URLs for local download and conversion
+- **`assets/usage_examples.md`**: Detailed examples and best practices for secure conversion
 
 ## Implementation Workflow
 
-1. **Identify Input Type**: Determine if input is URL or local file
-2. **Select Conversion Method**: Choose GET (URL direct), POST (URL via POST), or file upload
-3. **Configure Options**: Apply relevant headers and options based on user requirements
-4. **Execute Conversion**: Call the parsing service with appropriate parameters
-5. **Process Results**: Handle JSON or text responses, extract title and content
-6. **Error Handling**: Manage timeouts, invalid URLs, file errors gracefully
-7. **Output Formatting**: Return structured results or save to specified file
+1. **Security Check**: All processing happens locally using markitdown tool
+2. **Input Validation**: Verify file exists and is within size limits
+3. **Tool Detection**: Ensure markitdown is available in the system PATH
+4. **Local Processing**: Execute markitdown with specified options
+5. **Content Extraction**: Parse markitdown output and extract metadata
+6. **URL Handling** (if needed): Download content to temporary file, process locally, clean up
+7. **Error Handling**: Manage local processing errors gracefully
+8. **Output Formatting**: Return structured results or save to specified file
 
-## Advanced Features
+## Markitdown Integration
 
-### Content Extraction Control
+### Markitdown Options
 
-- **Smart Content Selection**: Automatically identifies main content areas
-- **CSS Selector Targeting**: Precise control over which elements to extract
-- **Element Removal**: Exclude navigation, footers, advertisements
-- **Image Processing**: Options to remove images or generate AI descriptions
+- **Plugin Support**: Use `--use-plugins` for third-party conversion plugins
+- **Document Intelligence**: Use `--use-docintel` with endpoint for enhanced processing
+- **Data URIs**: Use `--keep-data-uris` to preserve base64-encoded images
+- **Format Hints**: Provide MIME type and charset hints for better conversion
+- **Output Control**: Direct output to file or stdout
 
-### Technical Capabilities
+### Supported Formats
 
-- **iframe Support**: Parse embedded third-party content
-- **Shadow DOM Parsing**: Handle modern web components
-- **Redirect Following**: Resolve shortened URLs to final destinations
-- **Proxy Integration**: Route requests through specific proxies
-- **Timeout Management**: Configurable wait times for page loading
-- **PDF Fast Parse**: Optimized text-only extraction for large PDFs
+**Documents**:
+- PDF files (.pdf)
+- Word documents (.docx, .doc)
+- PowerPoint presentations (.pptx, .ppt)
+- Rich text format (.rtf)
+- Plain text files (.txt)
 
-### Service Integration
+**Web Content**:
+- HTML files (.html, .htm) - downloaded and processed locally
 
-- **Production URL**: https://reader-aigc.skyengine.com.cn
-- **Testing URL**: http://knowledge-reader.external.bdp-testing-streaming.k8s.skyengine.com.cn:8000
-- **Authentication**: Token not required for current implementation
-- **Caching**: Automatic caching for repeated requests
-- **Rate Limiting**: Built-in request pooling to prevent blocking
+**Other Formats**:
+- Markdown files (.md) - for validation and cleaning
+- CSV files (.csv)
+- JSON files (.json)
+- XML files (.xml)
+
+### Security Features
+
+- **Local Processing Only**: No data leaves the local system
+- **Temporary File Cleanup**: Automatic cleanup of downloaded URL content
+- **Privacy by Design**: All conversion happens using local markitdown tool
+- **Size Limits**: Configurable file size limits for local processing
+- **No External Dependencies**: All processing done with installed markitdown tool
 
 ## Error Handling and Troubleshooting
 
-Common error scenarios and solutions:
+Common local processing errors and solutions:
 
-- **400 Invalid URL**: Check URL encoding and format
-- **408 Timeout**: Increase timeout value or simplify target page
-- **502 Service Error**: Retry with backoff or contact support
-- **File Not Found**: Verify file path and permissions
-- **Upload Size**: Check file size limits (recommended <50MB)
+- **markitdown not found**: Install with `pip install markitdown`
+- **File not found**: Verify file path and permissions
+- **Processing timeout**: File may be too complex or large
+- **Permission denied**: Check file and directory permissions
+- **Memory issues**: File may be too large for available memory
 
 Refer to `references/error_handling.md` for detailed troubleshooting steps.
 
 ## Best Practices
 
-- Use specific CSS selectors for cleaner content extraction
-- Enable image removal for faster processing of image-heavy content
-- Set appropriate timeouts for complex pages
-- Use test environment for initial development
-- Implement retry logic for network errors
-- Cache results for frequently accessed content
+### Security and Privacy
+- All processing happens locally - no external API calls
+- Temporary files are automatically cleaned up
+- No data transmission to external services
+- Suitable for sensitive and confidential documents
+
+### Performance Optimization
+- Use appropriate file size limits (recommended < 100MB)
+- Enable plugins only when needed for specific formats
+- Consider Document Intelligence for complex documents
+- Monitor memory usage for large files
+
+### Quality Enhancement
+- Provide MIME type hints for better conversion accuracy
+- Use plugins for specialized format handling
+- Keep data URIs for image preservation when needed
+- Validate output for critical applications
+
+## Installation Requirements
+
+### Prerequisites
+
+```bash
+# Install markitdown tool
+pip install markitdown
+
+# Optional: For URL conversion capabilities
+pip install requests
+```
+
+### System Requirements
+
+- Python 3.7 or higher
+- markitdown tool installed and in PATH
+- Sufficient disk space for temporary files
+- Appropriate memory for document processing
+
+## Usage Examples
+
+### Basic Secure Conversion
+```bash
+# Convert PDF locally
+python scripts/converter.py "confidential.pdf" --output "secure.md"
+
+# Process with plugin support
+python scripts/converter.py "complex.docx" --use-plugins
+```
+
+### Advanced Local Processing
+```bash
+# Enhanced conversion with data URIs
+python scripts/converter.py "presentation.pptx" \
+  --keep-data-uris \
+  --use-plugins \
+  --output "complete.md"
+
+# URL conversion with local processing
+python scripts/converter.py "https://example.com/document.pdf" \
+  --output "downloaded.md"
+```
+
+### Document Intelligence Integration
+```bash
+# Use Document Intelligence for enhanced processing
+python scripts/converter.py "scan.pdf" \
+  --use-docintel \
+  --endpoint "https://your-docintel-endpoint.cognitiveservices.azure.com/"
+```
+
+## Comparison with External Services
+
+| Feature | Local Markitdown | External API Services |
+|---------|------------------|---------------------|
+| **Data Privacy** | ✅ Complete privacy | ❌ Data sent externally |
+| **Processing Speed** | ⚡ Fast local processing | 🌐 Network dependent |
+| **Internet Required** | ❌ Offline capable | ✅ Requires connection |
+| **Cost** | 💰 Free (local) | 💸 Usage-based pricing |
+| **Security** | 🔒 Maximum security | 🔓 Potential security risks |
+| **Customization** | 🔧 Full control | ⚙️ Limited options |
+| **Reliability** | 🟢 Stable local tool | 🟡 Service dependent |
+
+## Migration from External Services
+
+For users migrating from external document conversion services:
+
+1. **Install markitdown**: `pip install markitdown`
+2. **Update commands**: Replace API calls with local script usage
+3. **Adjust options**: Map external service options to markitdown equivalents
+4. **Test locally**: Verify conversion quality with sample documents
+5. **Update workflows**: Integrate local processing into existing pipelines
+
+## Data Privacy Assurance
+
+This skill ensures complete data privacy through:
+
+- **Local Processing**: All conversion happens on your local machine
+- **No External Calls**: No data is sent to external APIs or services
+- **Temporary Security**: Downloaded URL content is processed locally and cleaned up
+- **Memory Safety**: Processed data exists only in local memory during conversion
+- **File Security**: No files are uploaded or shared externally
+
+This makes the skill ideal for:
+- Confidential business documents
+- Personal sensitive information
+- Government and military applications
+- Healthcare and legal documents
+- Intellectual property and trade secrets

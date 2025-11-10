@@ -3,136 +3,150 @@
 Document Converter - Convert PDF, PPT, DOCX, and web pages to Markdown format
 
 This script provides a command-line interface for converting various document formats
-to Markdown using a high-performance content parsing service.
+to Markdown using local markitdown tool for security and privacy.
 """
 
-import requests
+import subprocess
 import json
 import sys
 import os
 import argparse
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 from typing import Optional, Dict, Any, Union
 import mimetypes
 from pathlib import Path
+import tempfile
+import shutil
 
 class DocumentConverter:
-    """Main document converter class"""
+    """Main document converter class using local markitdown tool"""
 
-    def __init__(self, base_url: str = "https://reader-aigc.skyengine.com.cn"):
+    def __init__(self):
         """
-        Initialize the converter
+        Initialize the converter with markitdown tool
+        """
+        self.markitdown_path = self._find_markitdown()
+        if not self.markitdown_path:
+            raise RuntimeError("markitdown tool not found. Please install it with: pip install markitdown")
+
+    def _find_markitdown(self) -> Optional[str]:
+        """Find markitdown executable in PATH"""
+        try:
+            result = subprocess.run(['which', 'markitdown'],
+                                  capture_output=True, text=True, timeout=10)
+            if result.returncode == 0:
+                return result.stdout.strip()
+        except (subprocess.TimeoutExpired, subprocess.SubprocessError):
+            pass
+        return None
+
+    def convert_file(self, file_path: Union[str, Path], **options) -> Dict[str, Any]:
+        """
+        Convert local file using markitdown tool
 
         Args:
-            base_url: Base URL for the conversion service
-        """
-        self.base_url = base_url
-        self.session = requests.Session()
-        self.session.headers.update({
-            'User-Agent': 'Document-Converter/1.0',
-            'Accept': 'application/json'
-        })
-
-    def convert_url_get(self, url: str, **options) -> Dict[str, Any]:
-        """
-        Convert URL using GET method
-
-        Args:
-            url: URL to convert
-            **options: Conversion options
+            file_path: Path to local file
+            **options: Conversion options (markitdown-specific)
 
         Returns:
             Conversion result as dictionary
         """
-        # URL encode the target URL
-        encoded_url = quote(url, safe=':/?#[]@!$&\'()*+,;=')
-        full_url = f"{self.base_url}/{encoded_url}"
+        file_path = Path(file_path)
 
-        # Build headers from options
-        headers = self._build_headers(options)
+        if not file_path.exists():
+            return {
+                'original_file': file_path.name,
+                'error': 'File does not exist',
+                'status': 'error',
+                'error_code': 404
+            }
+
+        # Check file size (recommended < 100MB for local processing)
+        file_size = file_path.stat().st_size
+        if file_size > 100 * 1024 * 1024:  # 100MB
+            return {
+                'original_file': file_path.name,
+                'error': f'File too large: {file_size / (1024*1024):.1f}MB (recommended < 100MB)',
+                'status': 'error',
+                'error_code': 413
+            }
 
         try:
-            response = self.session.get(full_url, headers=headers, timeout=60)
-            response.raise_for_status()
+            # Prepare markitdown command
+            cmd = [self.markitdown_path, str(file_path)]
 
-            # Parse response based on content type
-            content_type = response.headers.get('content-type', '').lower()
+            # Add markitdown options
+            if options.get('use_plugins'):
+                cmd.append('-p')
 
-            if 'application/json' in content_type:
-                return response.json()
-            else:
+            if options.get('use_docintel'):
+                cmd.append('-d')
+                if options.get('endpoint'):
+                    cmd.extend(['-e', options['endpoint']])
+
+            if options.get('mime_type'):
+                cmd.extend(['-m', options['mime_type']])
+
+            if options.get('charset'):
+                cmd.extend(['-c', options['charset']])
+
+            if options.get('keep_data_uris'):
+                cmd.append('--keep-data-uris')
+
+            # Execute markitdown
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                timeout=300,  # 5 minutes timeout for local processing
+                encoding='utf-8'
+            )
+
+            if result.returncode != 0:
                 return {
-                    'url': url,
-                    'title': self._extract_title_from_text(response.text),
-                    'content': response.text,
-                    'status': 'success',
-                    'content_type': content_type
+                    'original_file': file_path.name,
+                    'error': f'Markitdown conversion failed: {result.stderr}',
+                    'status': 'error',
+                    'error_code': 500
                 }
 
-        except requests.exceptions.Timeout:
+            content = result.stdout
+
+            # Extract title from content
+            title = self._extract_title_from_content(content)
+
             return {
-                'url': url,
-                'error': 'Request timeout - page took too long to load',
+                'original_file': file_path.name,
+                'file_size': file_size,
+                'title': title,
+                'content': content,
+                'status': 'success',
+                'tool': 'markitdown',
+                'processing_time': 'local'
+            }
+
+        except subprocess.TimeoutExpired:
+            return {
+                'original_file': file_path.name,
+                'error': 'File processing timeout - file may be too complex',
                 'status': 'error',
                 'error_code': 408
             }
-        except requests.exceptions.RequestException as e:
+        except Exception as e:
             return {
-                'url': url,
-                'error': f'Request failed: {str(e)}',
-                'status': 'error',
-                'error_code': getattr(e.response, 'status_code', 500) if hasattr(e, 'response') else 500
-            }
-
-    def convert_url_post(self, url: str, **options) -> Dict[str, Any]:
-        """
-        Convert URL using POST method
-
-        Args:
-            url: URL to convert
-            **options: Conversion options
-
-        Returns:
-            Conversion result as dictionary
-        """
-        headers = self._build_headers(options)
-        headers['Content-Type'] = 'application/json'
-
-        data = {'url': url}
-
-        try:
-            response = self.session.post(
-                self.base_url,
-                json=data,
-                headers=headers,
-                timeout=60
-            )
-            response.raise_for_status()
-
-            result = response.json()
-            return result
-
-        except requests.exceptions.RequestException as e:
-            return {
-                'url': url,
-                'error': f'POST request failed: {str(e)}',
-                'status': 'error',
-                'error_code': getattr(e.response, 'status_code', 500) if hasattr(e, 'response') else 500
-            }
-        except json.JSONDecodeError as e:
-            return {
-                'url': url,
-                'error': f'Response parsing error: {str(e)}',
+                'original_file': file_path.name,
+                'error': f'File processing error: {str(e)}',
                 'status': 'error',
                 'error_code': 500
             }
 
-    def convert_file(self, file_path: Union[str, Path], **options) -> Dict[str, Any]:
+    def convert_file_to_output(self, file_path: Union[str, Path], output_path: Optional[str] = None, **options) -> Dict[str, Any]:
         """
-        Convert local file by uploading
+        Convert file directly to output file using markitdown
 
         Args:
-            file_path: Path to local file
+            file_path: Path to input file
+            output_path: Path to output file (optional)
             **options: Conversion options
 
         Returns:
@@ -148,64 +162,72 @@ class DocumentConverter:
                 'error_code': 404
             }
 
-        # Check file size (recommended < 50MB)
-        file_size = file_path.stat().st_size
-        if file_size > 50 * 1024 * 1024:  # 50MB
-            return {
-                'original_file': file_path.name,
-                'error': f'File too large: {file_size / (1024*1024):.1f}MB (recommended < 50MB)',
-                'status': 'error',
-                'error_code': 413
-            }
-
-        # Build headers
-        headers = self._build_headers(options)
-
         try:
-            with open(file_path, 'rb') as f:
-                mime_type = mimetypes.guess_type(str(file_path))[0] or 'application/octet-stream'
-                files = {
-                    'file': (file_path.name, f, mime_type)
+            # Prepare markitdown command with output
+            cmd = [self.markitdown_path, str(file_path)]
+
+            if output_path:
+                cmd.extend(['-o', str(output_path)])
+
+            # Add other options
+            if options.get('use_plugins'):
+                cmd.append('-p')
+
+            if options.get('keep_data_uris'):
+                cmd.append('--keep-data-uris')
+
+            # Execute markitdown
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                timeout=300,
+                encoding='utf-8'
+            )
+
+            if result.returncode != 0:
+                return {
+                    'original_file': file_path.name,
+                    'error': f'Markitdown conversion failed: {result.stderr}',
+                    'status': 'error',
+                    'error_code': 500
                 }
 
-                response = self.session.post(
-                    self.base_url,
-                    files=files,
-                    headers=headers,
-                    timeout=120  # Longer timeout for file uploads
-                )
-                response.raise_for_status()
-
-                content_type = response.headers.get('content-type', '').lower()
-
-                if 'application/json' in content_type:
-                    result = response.json()
-                    result['original_file'] = file_path.name
-                    result['file_size'] = file_size
-                    return result
-                else:
+            # Read output file if it was created
+            content = ""
+            if output_path:
+                try:
+                    with open(output_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                except Exception as e:
                     return {
                         'original_file': file_path.name,
-                        'file_size': file_size,
-                        'title': file_path.stem,
-                        'content': response.text,
-                        'status': 'success',
-                        'content_type': content_type
+                        'output_file': str(output_path),
+                        'error': f'Failed to read output file: {str(e)}',
+                        'status': 'error',
+                        'error_code': 500
                     }
+            else:
+                content = result.stdout
 
-        except requests.exceptions.Timeout:
+            title = self._extract_title_from_content(content)
+
             return {
                 'original_file': file_path.name,
-                'error': 'File upload timeout - try a smaller file or check network connection',
+                'output_file': str(output_path) if output_path else None,
+                'title': title,
+                'content': content,
+                'status': 'success',
+                'tool': 'markitdown',
+                'processing_time': 'local'
+            }
+
+        except subprocess.TimeoutExpired:
+            return {
+                'original_file': file_path.name,
+                'error': 'File processing timeout - file may be too complex',
                 'status': 'error',
                 'error_code': 408
-            }
-        except requests.exceptions.RequestException as e:
-            return {
-                'original_file': file_path.name,
-                'error': f'Upload failed: {str(e)}',
-                'status': 'error',
-                'error_code': getattr(e.response, 'status_code', 500) if hasattr(e, 'response') else 500
             }
         except Exception as e:
             return {
@@ -215,84 +237,136 @@ class DocumentConverter:
                 'error_code': 500
             }
 
-    def _build_headers(self, options: Dict[str, Any]) -> Dict[str, str]:
+    def convert_url(self, url: str, **options) -> Dict[str, Any]:
         """
-        Build HTTP headers from options
+        Convert web page URL to Markdown (Note: This downloads content locally)
 
         Args:
-            options: Dictionary of conversion options
+            url: URL to convert
+            **options: Conversion options
 
         Returns:
-            Dictionary of HTTP headers
+            Conversion result as dictionary
         """
-        headers = {}
+        try:
+            import requests
+        except ImportError:
+            return {
+                'url': url,
+                'error': 'requests library not available for URL conversion. Install with: pip install requests',
+                'status': 'error',
+                'error_code': 501
+            }
 
-        # Map option names to header names
-        header_mapping = {
-            'remove_images': 'X-Remove-Images',
-            'describe_images': 'X-Describe-Images',
-            'proxy_url': 'X-Proxy-Url',
-            'timeout': 'X-Timeout',
-            'smart_selector': 'X-Smart-Selector',
-            'target_selector': 'X-Target-Selector',
-            'remove_selector': 'X-Remove-Selector',
-            'with_iframe': 'X-With-Iframe',
-            'with_shadow_dom': 'X-With-Shadow-Dom',
-            'follow_redirects': 'X-Follow-Redirects',
-            'pdf_fast_parse': 'X-Pdf-Fast-Parse',
-            'accept_json': 'Accept'
-        }
+        try:
+            # Download URL content
+            response = requests.get(url, timeout=30, headers={
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
+            })
+            response.raise_for_status()
 
-        for option_key, header_name in header_mapping.items():
-            if option_key in options:
-                value = options[option_key]
-                if isinstance(value, bool):
-                    value = str(value).lower()
-                elif value is None:
-                    continue
-                headers[header_name] = str(value)
+            # Determine file extension from URL or content type
+            parsed_url = urlparse(url)
+            url_path = parsed_url.path
+            extension = os.path.splitext(url_path)[1].lower()
 
-        return headers
+            if not extension:
+                content_type = response.headers.get('content-type', '')
+                if 'pdf' in content_type:
+                    extension = '.pdf'
+                elif 'html' in content_type:
+                    extension = '.html'
+                elif 'text' in content_type:
+                    extension = '.txt'
 
-    def _extract_title_from_text(self, text: str) -> str:
+            # Create temporary file
+            with tempfile.NamedTemporaryFile(suffix=extension or '.tmp', delete=False) as tmp_file:
+                tmp_file.write(response.content)
+                tmp_file_path = tmp_file.name
+
+            try:
+                # Convert downloaded file using markitdown
+                result = self.convert_file(tmp_file_path, **options)
+                result['url'] = url
+                result['original_filename'] = os.path.basename(url_path) or f'downloaded{extension}'
+
+                # Clean up temporary file
+                os.unlink(tmp_file_path)
+
+                return result
+
+            except Exception as e:
+                # Clean up temporary file on error
+                if os.path.exists(tmp_file_path):
+                    os.unlink(tmp_file_path)
+                raise e
+
+        except requests.exceptions.RequestException as e:
+            return {
+                'url': url,
+                'error': f'Failed to download URL: {str(e)}',
+                'status': 'error',
+                'error_code': 400
+            }
+        except Exception as e:
+            return {
+                'url': url,
+                'error': f'URL processing error: {str(e)}',
+                'status': 'error',
+                'error_code': 500
+            }
+
+    def _extract_title_from_content(self, content: str) -> str:
         """
-        Extract title from plain text content
+        Extract title from markdown content
 
         Args:
-            text: Text content to analyze
+            content: Markdown content to analyze
 
         Returns:
             Extracted title or default
         """
-        lines = text.strip().split('\n')
+        lines = content.strip().split('\n')
         for line in lines:
             line = line.strip()
-            # Skip empty lines and markdown headers
-            if line and not line.startswith('#') and not line.startswith('http'):
-                # Look for reasonable title candidates
+            # Look for first non-empty line that could be a title
+            if line and not line.startswith('©') and not line.isdigit():
                 if len(line) < 100 and not line.startswith('```'):
-                    return line
-
+                    # Remove common non-title patterns
+                    if not any(pattern in line.lower() for pattern in ['page', '©', 'all rights reserved']):
+                        return line
         return "Untitled Document"
+
+    def get_supported_formats(self) -> Dict[str, list]:
+        """
+        Get list of supported file formats
+        """
+        return {
+            'documents': ['.pdf', '.docx', '.doc', '.pptx', '.ppt', '.txt', '.rtf'],
+            'images': ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff'],
+            'web': ['.html', '.htm'],
+            'other': ['.md', '.csv', '.json', '.xml']
+        }
 
 def create_argument_parser() -> argparse.ArgumentParser:
     """Create and configure argument parser"""
     parser = argparse.ArgumentParser(
-        description='Convert PDF, PPT, DOCX, and web pages to Markdown format',
+        description='Convert PDF, PPT, DOCX, and other files to Markdown format using local markitdown tool',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  %(prog)s "https://blog.samaltman.com"
-  %(prog)s "document.pdf" --output converted.md
-  %(prog)s "https://example.com" --target-selector "article" --remove-selector "nav,footer"
-  %(prog)s "presentation.pptx" --remove-images --timeout 45000
+  %(prog)s document.pdf
+  %(prog)s document.pdf --output converted.md
+  %(prog)s presentation.pptx --use-plugins
+  %(prog)s https://example.com/document.pdf
         """
     )
 
     # Input arguments
     parser.add_argument(
         'input',
-        help='URL to convert or path to local file'
+        nargs='?',  # Make input optional for utility commands
+        help='Path to local file or URL to convert'
     )
 
     # Output options
@@ -302,105 +376,58 @@ Examples:
     )
 
     parser.add_argument(
-        '--method',
-        choices=['get', 'post'],
-        default='get',
-        help='HTTP method for URL conversion (default: get)'
-    )
-
-    parser.add_argument(
         '--json',
         action='store_true',
         help='Output result in JSON format'
     )
 
-    # Content processing options
-    content_group = parser.add_argument_group('Content Processing Options')
+    # Markitdown specific options
+    markitdown_group = parser.add_argument_group('Markitdown Options')
 
-    content_group.add_argument(
-        '--remove-images',
+    markitdown_group.add_argument(
+        '--use-plugins',
         action='store_true',
-        help='Remove all images from the output'
+        help='Use 3rd-party plugins for conversion'
     )
 
-    content_group.add_argument(
-        '--describe-images',
+    markitdown_group.add_argument(
+        '--use-docintel',
         action='store_true',
-        help='Use AI to describe images in text'
+        help='Use Document Intelligence (requires endpoint)'
     )
 
-    content_group.add_argument(
-        '--smart-selector',
+    markitdown_group.add_argument(
+        '--endpoint',
+        help='Document Intelligence endpoint (required with --use-docintel)'
+    )
+
+    markitdown_group.add_argument(
+        '--mime-type',
+        help='Provide hint about file MIME type'
+    )
+
+    markitdown_group.add_argument(
+        '--charset',
+        help='Provide hint about file charset (e.g., UTF-8)'
+    )
+
+    markitdown_group.add_argument(
+        '--keep-data-uris',
         action='store_true',
-        default=True,
-        help='Enable smart content extraction (default: enabled)'
+        help='Keep data URIs (like base64-encoded images) in output'
     )
 
-    content_group.add_argument(
-        '--no-smart-selector',
-        dest='smart_selector',
-        action='store_false',
-        help='Disable smart content extraction'
-    )
-
-    # CSS selector options
-    selector_group = parser.add_argument_group('CSS Selector Options')
-
-    selector_group.add_argument(
-        '--target-selector',
-        help='CSS selector for target content (e.g., "article", ".content")'
-    )
-
-    selector_group.add_argument(
-        '--remove-selector',
-        help='CSS selector for elements to remove (e.g., "nav,footer,.ads")'
-    )
-
-    # Advanced options
-    advanced_group = parser.add_argument_group('Advanced Options')
-
-    advanced_group.add_argument(
-        '--with-iframe',
+    # Utility options
+    parser.add_argument(
+        '--list-formats',
         action='store_true',
-        help='Parse iframe content'
+        help='List supported file formats and exit'
     )
 
-    advanced_group.add_argument(
-        '--with-shadow-dom',
+    parser.add_argument(
+        '--markitdown-version',
         action='store_true',
-        help='Parse Shadow DOM content'
-    )
-
-    advanced_group.add_argument(
-        '--follow-redirects',
-        action='store_true',
-        help='Follow URL redirects to final destination'
-    )
-
-    advanced_group.add_argument(
-        '--timeout',
-        type=int,
-        help='Page load timeout in milliseconds (default: 30000, max: 60000)'
-    )
-
-    advanced_group.add_argument(
-        '--pdf-fast-parse',
-        action='store_true',
-        help='Use fast PDF parsing (text only)'
-    )
-
-    # Service options
-    service_group = parser.add_argument_group('Service Options')
-
-    service_group.add_argument(
-        '--test',
-        action='store_true',
-        help='Use testing environment instead of production'
-    )
-
-    service_group.add_argument(
-        '--proxy-url',
-        help='Proxy URL for accessing restricted pages'
+        help='Show markitdown version and exit'
     )
 
     return parser
@@ -410,53 +437,85 @@ def main():
     parser = create_argument_parser()
     args = parser.parse_args()
 
-    # Determine service URL
-    if args.test:
-        base_url = "http://knowledge-reader.external.bdp-testing-streaming.k8s.skyengine.com.cn:8000"
-        print("🧪 Using testing environment")
-    else:
-        base_url = "https://reader-aigc.skyengine.com.cn"
-        print("🚀 Using production environment")
+    # Handle utility options
+    if args.list_formats:
+        try:
+            converter = DocumentConverter()
+            formats = converter.get_supported_formats()
+            print("Supported file formats:")
+            for category, extensions in formats.items():
+                print(f"\n{category.title()}:")
+                for ext in extensions:
+                    print(f"  {ext}")
+            return
+        except RuntimeError as e:
+            print(f"Error: {e}")
+            sys.exit(1)
+
+    if args.markitdown_version:
+        try:
+            result = subprocess.run(['markitdown', '--version'],
+                                  capture_output=True, text=True, timeout=10)
+            if result.returncode == 0:
+                print(f"Markitdown version: {result.stdout.strip()}")
+            else:
+                print("Failed to get markitdown version")
+        except Exception as e:
+            print(f"Error getting version: {e}")
+        return
+
+    # Check if input is provided for conversion commands
+    if not args.input:
+        parser.error("input file or URL is required for conversion")
 
     # Create converter
-    converter = DocumentConverter(base_url)
+    try:
+        converter = DocumentConverter()
+    except RuntimeError as e:
+        print(f"❌ Error: {e}")
+        sys.exit(1)
+
+    # Determine input type and convert
+    input_path = args.input
+    print(f"📄 Processing: {input_path}")
 
     # Prepare conversion options
     options = {
-        'remove_images': args.remove_images,
-        'describe_images': args.describe_images,
-        'smart_selector': args.smart_selector,
-        'target_selector': args.target_selector,
-        'remove_selector': args.remove_selector,
-        'with_iframe': args.with_iframe,
-        'with_shadow_dom': args.with_shadow_dom,
-        'follow_redirects': args.follow_redirects,
-        'timeout': args.timeout,
-        'pdf_fast_parse': args.pdf_fast_parse,
-        'proxy_url': args.proxy_url,
-        'accept_json': 'application/json' if args.json else None
+        'use_plugins': args.use_plugins,
+        'use_docintel': args.use_docintel,
+        'endpoint': args.endpoint,
+        'mime_type': args.mime_type,
+        'charset': args.charset,
+        'keep_data_uris': args.keep_data_uris
     }
 
     # Remove None values
     options = {k: v for k, v in options.items() if v is not None}
 
-    # Determine input type and convert
-    input_path = Path(args.input)
-    print(f"📄 Processing: {args.input}")
+    # Validate Document Intelligence requirements
+    if args.use_docintel and not args.endpoint:
+        print("❌ Error: --endpoint is required when using --use-docintel")
+        sys.exit(1)
 
-    if input_path.exists() and input_path.is_file():
-        # File conversion
-        print("📁 Detected local file")
-        result = converter.convert_file(input_path, **options)
-        input_type = "File"
-    else:
+    # Execute conversion
+    if input_path.startswith(('http://', 'https://')):
         # URL conversion
-        print("🌐 Detected URL")
-        if args.method == 'post':
-            result = converter.convert_url_post(args.input, **options)
-        else:
-            result = converter.convert_url_get(args.input, **options)
+        print("🌐 Detected URL - downloading and converting locally")
+        result = converter.convert_url(input_path, **options)
         input_type = "URL"
+    else:
+        # File conversion
+        input_path_obj = Path(input_path)
+        if input_path_obj.exists() and input_path_obj.is_file():
+            print("📁 Detected local file - using secure local processing")
+            if args.output:
+                result = converter.convert_file_to_output(input_path_obj, args.output, **options)
+            else:
+                result = converter.convert_file(input_path_obj, **options)
+            input_type = "File"
+        else:
+            print(f"❌ Error: File not found: {input_path}")
+            sys.exit(1)
 
     # Handle results
     if result.get('status') == 'error':
@@ -464,20 +523,11 @@ def main():
         error_msg = result.get('error', 'Unknown error')
         print(f"❌ {input_type} conversion failed (Error {error_code})")
         print(f"   Details: {error_msg}")
-
-        # Provide helpful suggestions
-        if error_code == 400:
-            print("💡 Suggestion: Check URL format and encoding")
-        elif error_code == 408:
-            print("💡 Suggestion: Try increasing timeout with --timeout or simplify the target page")
-        elif error_code == 413:
-            print("💡 Suggestion: File too large, try with a smaller file (< 50MB)")
-        elif error_code >= 500:
-            print("💡 Suggestion: Service error, try again later or use --test environment")
-
         sys.exit(1)
 
     print(f"✅ {input_type} conversion successful")
+    print(f"🔧 Tool used: {result.get('tool', 'markitdown')}")
+    print(f"🔒 Processing: {result.get('processing_time', 'local')}")
 
     # Prepare output content
     if args.json:
@@ -489,7 +539,8 @@ def main():
             output_content = json.dumps(result, ensure_ascii=False, indent=2)
 
     # Output to file or console
-    if args.output:
+    if args.output and not result.get('output_file'):
+        # Only save if markitdown didn't already save to output file
         output_path = Path(args.output)
         try:
             output_path.write_text(output_content, encoding='utf-8')
@@ -499,6 +550,14 @@ def main():
             print("📄 Outputting to console instead:")
             print("\n" + "="*50)
             print(output_content)
+    elif result.get('output_file'):
+        print(f"💾 Result saved to: {result['output_file']}")
+        if args.json:
+            print("\n" + "="*50)
+            print("JSON METADATA:")
+            print("="*50)
+            metadata = {k: v for k, v in result.items() if k != 'content'}
+            print(json.dumps(metadata, ensure_ascii=False, indent=2))
     else:
         print("\n" + "="*50)
         print("CONVERSION RESULT:")
