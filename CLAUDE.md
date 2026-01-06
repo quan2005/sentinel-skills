@@ -56,21 +56,33 @@
 
 本项目仅保留核心技能。更多开发、代理工作流等专业技能请从以下仓库获取：
 
-| 仓库 | 描述 |
-|------|------|
-| **[shareAI-skills](https://github.com/shareAI-lab/shareAI-skills)** | 开发、内容创作等专业技能 |
-| **[superpowers](https://github.com/obra/superpowers)** | Agent 开发工作流技能集 |
+| 仓库 | 描述 | 安装方式 |
+|------|------|----------|
+| **[superpowers](https://github.com/obra/superpowers)** | Agent 开发工作流技能集 | Claude Code 插件市场 |
+| **[shareAI-skills](https://github.com/shareAI-lab/shareAI-skills)** | 开发、内容创作等专业技能 | `git clone` 手动安装 |
+
+#### superpowers 安装（推荐）
+
+**superpowers** 是一个完整的软件开发工作流技能库，包含 TDD、系统化调试、代码审查等专业技能。
 
 ```bash
-# 克隆 shareAI-skills
+# 注册插件市场
+/plugin marketplace add obra/superpowers-marketplace
+
+# 安装 superpowers 插件
+/plugin install superpowers@superpowers-marketplace
+
+# 验证安装
+/help
+```
+
+**核心工作流**：`brainstorming` → `writing-plans` → `test-driven-development` → `systematic-debugging` → `requesting-code-review` → `finishing-a-development-branch`
+
+#### shareAI-skills 安装
+
+```bash
 git clone https://github.com/shareAI-lab/shareAI-skills.git
-
-# 克隆 superpowers
-git clone https://github.com/obra/superpowers.git
-
-# 复制所需技能到项目的 skills/ 目录
 cp -r shareAI-skills/skills/<skill-name> ~/.claude/skills/
-cp -r superpowers/skills/<skill-name> ~/.claude/skills/
 ```
 
 ### 本地可用技能

@@ -33,17 +33,47 @@ My Claude Code 是为 Claude Code CLI 设计的技能（Skills）和命令（Com
 
 专业开发、代理工作流等更多技能请从以下仓库获取：
 
-| 仓库 | 描述 |
-|------|------|
-| **[shareAI-skills](https://github.com/shareAI-lab/shareAI-skills)** | 开发、内容创作等专业技能 |
-| **[superpowers](https://github.com/obra/superpowers)** | Agent 开发工作流技能集 |
+| 仓库 | 描述 | 安装方式 |
+|------|------|----------|
+| **[shareAI-skills](https://github.com/shareAI-lab/shareAI-skills)** | 开发、内容创作等专业技能 | `git clone` 手动安装 |
+| **[superpowers](https://github.com/obra/superpowers)** | Agent 开发工作流技能集 | Claude Code 插件市场 |
+
+#### superpowers 安装（推荐）
+
+**superpowers** 是一个完整的软件开发工作流技能库，包含 TDD、系统化调试、代码审查等专业技能。
+
+**在 Claude Code 中通过插件市场安装**：
 
 ```bash
-# 克隆 shareAI-skills
-git clone https://github.com/shareAI-lab/shareAI-skills.git
+# 注册插件市场
+/plugin marketplace add obra/superpowers-marketplace
 
-# 克隆 superpowers
-git clone https://github.com/obra/superpowers.git
+# 安装 superpowers 插件
+/plugin install superpowers@superpowers-marketplace
+
+# 验证安装
+/help
+# 应看到：/superpowers:brainstorm, /superpowers:write-plan 等
+```
+
+**核心工作流**：
+
+| 阶段 | 技能 | 描述 |
+|--------|------|------|
+| 设计 | `brainstorming` | 交互式设计完善，探索方案 |
+| 规划 | `writing-plans` | 创建详细的实施计划 |
+| 开发 | `test-driven-development` | RED-GREEN-REFACTOR TDD 循环 |
+| 调试 | `systematic-debugging` | 4 阶段根因分析流程 |
+| 审查 | `requesting-code-review` | 代码质量预检查 |
+| 收尾 | `finishing-a-development-branch` | 合并/PR 决策工作流 |
+
+**了解更多**: [obra/superpowers](https://github.com/obra/superpowers)
+
+#### shareAI-skills 安装
+
+```bash
+git clone https://github.com/shareAI-lab/shareAI-skills.git
+cp -r shareAI-skills/skills/<skill-name> ~/.claude/skills/
 ```
 
 ---
@@ -100,18 +130,21 @@ ls ~/.claude/commands/
 
 ### Step 3: 安装更多技能（可选）
 
-从以下仓库获取更多专业技能：
+**superpowers** — Agent 开发工作流技能集（推荐通过插件市场安装）：
+
+```bash
+# 注册插件市场
+/plugin marketplace add obra/superpowers-marketplace
+
+# 安装 superpowers 插件
+/plugin install superpowers@superpowers-marketplace
+```
 
 **shareAI-skills** — 开发、内容创作等专业技能：
+
 ```bash
 git clone https://github.com/shareAI-lab/shareAI-skills.git
 cp -r shareAI-skills/skills/<skill-name> ~/.claude/skills/
-```
-
-**superpowers** — Agent 开发工作流技能集：
-```bash
-git clone https://github.com/obra/superpowers.git
-cp -r superpowers/skills/<skill-name> ~/.claude/skills/
 ```
 
 ### Step 4: 激活技能
