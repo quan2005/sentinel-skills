@@ -72,8 +72,12 @@ My Claude Code 是为 Claude Code CLI 设计的技能（Skills）和命令（Com
 #### shareAI-skills 安装
 
 ```bash
+# 克隆并一键安装所有技能
 git clone https://github.com/shareAI-lab/shareAI-skills.git
-cp -r shareAI-skills/skills/<skill-name> ~/.claude/skills/
+cp -r shareAI-skills/skills/* ~/.claude/skills/
+
+# 清理克隆目录（可选）
+rm -rf shareAI-skills
 ```
 
 ---
@@ -143,8 +147,10 @@ ls ~/.claude/commands/
 **shareAI-skills** — 开发、内容创作等专业技能：
 
 ```bash
+# 克隆并一键安装所有技能
 git clone https://github.com/shareAI-lab/shareAI-skills.git
-cp -r shareAI-skills/skills/<skill-name> ~/.claude/skills/
+cp -r shareAI-skills/skills/* ~/.claude/skills/
+rm -rf shareAI-skills
 ```
 
 ### Step 4: 激活技能

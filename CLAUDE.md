@@ -81,8 +81,12 @@
 #### shareAI-skills 安装
 
 ```bash
+# 克隆并一键安装所有技能
 git clone https://github.com/shareAI-lab/shareAI-skills.git
-cp -r shareAI-skills/skills/<skill-name> ~/.claude/skills/
+cp -r shareAI-skills/skills/* ~/.claude/skills/
+
+# 清理克隆目录（可选）
+rm -rf shareAI-skills
 ```
 
 ### 本地可用技能
