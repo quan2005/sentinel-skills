@@ -52,16 +52,51 @@
 
 ## 技能调用规则
 
-### 何时调用技能
+### 获取技能
+
+本项目仅保留核心技能。更多开发、代理工作流等专业技能请从以下仓库获取：
+
+| 仓库 | 描述 | 安装方式 |
+|------|------|----------|
+| **[superpowers](https://github.com/obra/superpowers)** | Agent 开发工作流技能集 | Claude Code 插件市场 |
+| **[shareAI-skills](https://github.com/shareai-lab/shareAI-skills)** | 开发、内容创作等专业技能 | `git clone` 手动安装 |
+
+#### superpowers 安装（推荐）
+
+**superpowers** 是一个完整的软件开发工作流技能库，包含 TDD、系统化调试、代码审查等专业技能。
+
+```bash
+# 注册插件市场
+/plugin marketplace add obra/superpowers-marketplace
+
+# 安装 superpowers 插件
+/plugin install superpowers@superpowers-marketplace
+
+# 验证安装
+/help
+```
+
+**核心工作流**：`brainstorming` → `writing-plans` → `test-driven-development` → `systematic-debugging` → `requesting-code-review` → `finishing-a-development-branch`
+
+#### shareAI-skills 安装
+
+```bash
+# 克隆并一键安装所有技能
+git clone https://github.com/shareai-lab/shareAI-skills.git
+cp -r shareAI-skills/skills/* ~/.claude/skills/
+
+# 清理克隆目录（可选）
+rm -rf shareAI-skills
+```
+
+### 本地可用技能
 
 | 场景 | 应调用技能 |
 |------|-------------|
-| 任何开发任务 | `@vibe-coding` |
 | 职业规划、才能探索 | `@talent-discovery` |
-| 创建 AI 代理 | `@agent-builder` |
 | 产品设计讨论 | `/product-philosophy` |
 | 提示词优化 | `@prompt-optimization` |
-| 创建内容 | `@media-writer` 或 `@creating-images` |
+| 图像生成/创作 | `@creating-images` |
 
 ### 技能调用协议
 
@@ -132,7 +167,7 @@
 
 | 类型 | 约定 | 示例 |
 |------|------|------|
-| 技能定义 | `SKILL.md` | `skills/vibe-coding/SKILL.md` |
+| 技能定义 | `SKILL.md` | `skills/prompt-optimization/SKILL.md` |
 | 参考知识 | `references/` | `references/domains/api-design.md` |
 | 资源模板 | `assets/` | `assets/templates/prd.md` |
 | 命令定义 | `*.md` | `commands/product-philosophy.md` |
@@ -183,16 +218,7 @@ description: 简洁描述技能的用途和触发时机
 
 ### 技能参考资料加载
 
-当 `vibe-coding` 技能激活时，必须根据场景加载相关参考资料：
-
-| 场景 | 必须加载 |
-|------|----------|
-| 从零开始新项目 | `references/scenarios/greenfield.md` |
-| 添加到现有代码 | `references/scenarios/feature.md` |
-| 修复 Bug | `references/patterns/debugging.md` |
-| 性能优化 | `references/scenarios/optimization.md` |
-| UI/前端工作 | `references/domains/ui-aesthetics.md` |
-| API 工作 | `references/domains/api-interface.md` |
+当从 shareAI-skills 安装专业技能后，请参照各技能自身的指引加载相关参考资料。
 
 ---
 

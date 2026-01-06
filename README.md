@@ -20,16 +20,65 @@ My Claude Code 是为 Claude Code CLI 设计的技能（Skills）和命令（Com
 
 ## 技能包一览
 
+### 本地技能
+
 | 技能 | 描述 | 适用场景 |
 |------|------|----------|
-| **vibe-coding** | 有品位的编程 — 将 AI 转变为专业开发伙伴 | 任何开发任务：构建功能、修复 Bug、系统设计、重构 |
 | **talent-discovery** | 才能发现 — 结合盖洛普优势理论、心流理论和荣格心理学的苏格拉底式指导 | 职业规划、自我发现、优势探索、潜在能力挖掘 |
-| **agent-builder** | AI 代理构建器 — 为任何领域设计构建 AI 代理 | 创建领域专用 AI 代理、定义代理能力范围 |
 | **prompt-engineering-patterns** | 提示工程模式 — 提示工程最佳实践和模式库 | 学习提示工程技巧、创建提示模板 |
 | **prompt-optimization** | 提示优化 — 优化和改进系统提示词 | 改进现有提示词效果、提示词诊断 |
-| **media-writer** | 媒体内容创作 — 为不同平台创作内容 | LinkedIn、微信、Twitter、Reddit 等平台内容创作 |
 | **creating-images** | 图像生成 — 创建和生成图像内容 | 视觉内容创作、图像生成 |
-| **skill-judge** | 技能评估 — 评估和评判技能质量 | 技能质量审查、评估框架 |
+
+### 更多技能
+
+专业开发、代理工作流等更多技能请从以下仓库获取：
+
+| 仓库 | 描述 | 安装方式 |
+|------|------|----------|
+| **[shareAI-skills](https://github.com/shareai-lab/shareAI-skills)** | 开发、内容创作等专业技能 | `git clone` 手动安装 |
+| **[superpowers](https://github.com/obra/superpowers)** | Agent 开发工作流技能集 | Claude Code 插件市场 |
+
+#### superpowers 安装（推荐）
+
+**superpowers** 是一个完整的软件开发工作流技能库，包含 TDD、系统化调试、代码审查等专业技能。
+
+**在 Claude Code 中通过插件市场安装**：
+
+```bash
+# 注册插件市场
+/plugin marketplace add obra/superpowers-marketplace
+
+# 安装 superpowers 插件
+/plugin install superpowers@superpowers-marketplace
+
+# 验证安装
+/help
+# 应看到：/superpowers:brainstorm, /superpowers:write-plan 等
+```
+
+**核心工作流**：
+
+| 阶段 | 技能 | 描述 |
+|--------|------|------|
+| 设计 | `brainstorming` | 交互式设计完善，探索方案 |
+| 规划 | `writing-plans` | 创建详细的实施计划 |
+| 开发 | `test-driven-development` | RED-GREEN-REFACTOR TDD 循环 |
+| 调试 | `systematic-debugging` | 4 阶段根因分析流程 |
+| 审查 | `requesting-code-review` | 代码质量预检查 |
+| 收尾 | `finishing-a-development-branch` | 合并/PR 决策工作流 |
+
+**了解更多**: [obra/superpowers](https://github.com/obra/superpowers)
+
+#### shareAI-skills 安装
+
+```bash
+# 克隆并一键安装所有技能
+git clone https://github.com/shareai-lab/shareAI-skills.git
+cp -r shareAI-skills/skills/* ~/.claude/skills/
+
+# 清理克隆目录（可选）
+rm -rf shareAI-skills
+```
 
 ---
 
@@ -61,8 +110,8 @@ fi
 ### Step 1: 克隆仓库
 
 ```bash
-# 克隆到本地
-git clone git@github.com:quan2005/my_claude_code.git ~/my_claude_code
+# 克隆到本地（使用 HTTPS，无需 SSH 配置）
+git clone https://github.com/quan2005/my_claude_code.git ~/my_claude_code
 
 # 复制技能到 Claude Code 技能目录
 cp -r ~/my_claude_code/skills/* ~/.claude/skills/
@@ -76,21 +125,41 @@ cp -r ~/my_claude_code/commands/* ~/.claude/commands/
 ```bash
 # 检查技能包
 ls ~/.claude/skills/
-# 应看到: agent-builder, creating-images, media-writer, talent-discovery, vibe-coding, etc.
+# 应看到: creating-images, prompt-engineering-patterns, prompt-optimization, talent-discovery
 
 # 检查命令
 ls ~/.claude/commands/
 # 应看到: product-philosophy.md, pr.md
 ```
 
-### Step 3: 激活技能
+### Step 3: 安装更多技能（可选）
+
+**superpowers** — Agent 开发工作流技能集（推荐通过插件市场安装）：
+
+```bash
+# 注册插件市场
+/plugin marketplace add obra/superpowers-marketplace
+
+# 安装 superpowers 插件
+/plugin install superpowers@superpowers-marketplace
+```
+
+**shareAI-skills** — 开发、内容创作等专业技能：
+
+```bash
+# 克隆并一键安装所有技能
+git clone https://github.com/shareai-lab/shareAI-skills.git
+cp -r shareAI-skills/skills/* ~/.claude/skills/
+rm -rf shareAI-skills
+```
+
+### Step 4: 激活技能
 
 在 Claude Code 中，技能会自动加载。使用时调用：
 
 ```
-@vibe-coding 帮我用有品位的方式重构这个组件
 @talent-discovery 帮我探索我的潜在才能
-@agent-builder 创建一个数据分析领域的 AI 代理
+@prompt-optimization 优化这个系统提示词
 ```
 
 或使用命令：
@@ -99,7 +168,7 @@ ls ~/.claude/commands/
 /product-philosophy 让我们讨论这个产品的设计哲学
 ```
 
-### Step 4: 验证技能可用性
+### Step 5: 验证技能可用性
 
 在 Claude Code 中输入：
 
@@ -113,22 +182,6 @@ ls ~/.claude/commands/
 
 ## 技能深度解析
 
-### vibe-coding — 有品位的编程
-
-**核心理念**：Human provides the Vibe, Agent provides the Code.
-
-**四大法则**：
-1. **UNDERSTAND BEFORE BUILDING** — 先理解再构建
-2. **SURFACE ALL DECISIONS** — 显式所有决策
-3. **VERIFY ATOMICALLY** — 原子化验证
-4. **CRAFTSMANSHIP ALWAYS** — 工匠精神永在
-
-**工作模式**：
-- Discovery — 需求探索
-- Design — 设计方案
-- Execution — 执行构建
-- Debug — 调试修复
-
 ### talent-discovery — 才能发现
 
 结合盖洛普优势理论、心流理论和荣格心理学的苏格拉底式指导过程。
@@ -139,17 +192,6 @@ ls ~/.claude/commands/
 - 你的缺点、怪癖、甚至嫉妒，往往是天赋被压抑的背面
 
 **流程**：通过 4-10 个深度问题，挖掘用户的底层天赋，最终生成万字《个人天赋使用说明书》。
-
-### agent-builder — AI 代理构建器
-
-**核心理念**：模型已经知道如何成为代理，你的工作就是不要阻碍它。
-
-**能力循环**：
-```
-Capabilities → Knowledge → Context
-     ↑                            ↓
-     ←────────────────────────────
-```
 
 ### prompt-engineering-patterns — 提示工程模式
 
@@ -167,16 +209,10 @@ Capabilities → Knowledge → Context
 ```
 my_claude_code/
 ├── skills/                        # 技能包（复制到 ~/.claude/skills/）
-│   ├── vibe-coding/               # 有品位的编程
-│   │   ├── SKILL.md              # 技能核心定义
-│   │   └── references/           # 深度专业知识
 │   ├── talent-discovery/         # 才能发现
-│   ├── agent-builder/            # AI 代理构建器
 │   ├── prompt-engineering-patterns/  # 提示工程模式
 │   ├── prompt-optimization/      # 提示优化
-│   ├── media-writer/             # 媒体内容创作
-│   ├── creating-images/          # 图像生成
-│   └── skill-judge/             # 技能评估
+│   └── creating-images/          # 图像生成
 ├── commands/                      # 自定义命令（复制到 ~/.claude/commands/）
 │   ├── product-philosophy.md     # 产品哲学探索
 │   └── pr.md                    # PR 命令
