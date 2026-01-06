@@ -54,14 +54,23 @@
 
 ### 获取技能
 
-本项目仅保留核心技能。更多开发、内容创作等专业技能请从 **[shareAI-skills](https://github.com/shareAI-lab/shareAI-skills)** 仓库获取：
+本项目仅保留核心技能。更多开发、代理工作流等专业技能请从以下仓库获取：
+
+| 仓库 | 描述 |
+|------|------|
+| **[shareAI-skills](https://github.com/shareAI-lab/shareAI-skills)** | 开发、内容创作等专业技能 |
+| **[superpowers](https://github.com/obra/superpowers)** | Agent 开发工作流技能集 |
 
 ```bash
-# 克隆技能仓库
+# 克隆 shareAI-skills
 git clone https://github.com/shareAI-lab/shareAI-skills.git
 
+# 克隆 superpowers
+git clone https://github.com/obra/superpowers.git
+
 # 复制所需技能到项目的 skills/ 目录
-cp -r shareAI-skills/skills/<skill-name> /path/to/your/project/skills/
+cp -r shareAI-skills/skills/<skill-name> ~/.claude/skills/
+cp -r superpowers/skills/<skill-name> ~/.claude/skills/
 ```
 
 ### 本地可用技能

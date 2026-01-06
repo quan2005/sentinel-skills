@@ -31,10 +31,19 @@ My Claude Code 是为 Claude Code CLI 设计的技能（Skills）和命令（Com
 
 ### 更多技能
 
-专业开发、内容创作等更多技能请从 **[shareAI-skills](https://github.com/shareAI-lab/shareAI-skills)** 仓库获取：
+专业开发、代理工作流等更多技能请从以下仓库获取：
+
+| 仓库 | 描述 |
+|------|------|
+| **[shareAI-skills](https://github.com/shareAI-lab/shareAI-skills)** | 开发、内容创作等专业技能 |
+| **[superpowers](https://github.com/obra/superpowers)** | Agent 开发工作流技能集 |
 
 ```bash
+# 克隆 shareAI-skills
 git clone https://github.com/shareAI-lab/shareAI-skills.git
+
+# 克隆 superpowers
+git clone https://github.com/obra/superpowers.git
 ```
 
 ---
@@ -91,11 +100,18 @@ ls ~/.claude/commands/
 
 ### Step 3: 安装更多技能（可选）
 
-从 [shareAI-skills](https://github.com/shareAI-lab/shareAI-skills) 获取更多专业技能：
+从以下仓库获取更多专业技能：
 
+**shareAI-skills** — 开发、内容创作等专业技能：
 ```bash
 git clone https://github.com/shareAI-lab/shareAI-skills.git
 cp -r shareAI-skills/skills/<skill-name> ~/.claude/skills/
+```
+
+**superpowers** — Agent 开发工作流技能集：
+```bash
+git clone https://github.com/obra/superpowers.git
+cp -r superpowers/skills/<skill-name> ~/.claude/skills/
 ```
 
 ### Step 4: 激活技能
