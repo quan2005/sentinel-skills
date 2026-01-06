@@ -59,7 +59,7 @@
 | 仓库 | 描述 | 安装方式 |
 |------|------|----------|
 | **[superpowers](https://github.com/obra/superpowers)** | Agent 开发工作流技能集 | Claude Code 插件市场 |
-| **[shareAI-skills](https://github.com/shareAI-lab/shareAI-skills)** | 开发、内容创作等专业技能 | `git clone` 手动安装 |
+| **[shareAI-skills](https://github.com/shareai-lab/shareAI-skills)** | 开发、内容创作等专业技能 | `git clone` 手动安装 |
 
 #### superpowers 安装（推荐）
 
@@ -82,7 +82,7 @@
 
 ```bash
 # 克隆并一键安装所有技能
-git clone https://github.com/shareAI-lab/shareAI-skills.git
+git clone https://github.com/shareai-lab/shareAI-skills.git
 cp -r shareAI-skills/skills/* ~/.claude/skills/
 
 # 清理克隆目录（可选）

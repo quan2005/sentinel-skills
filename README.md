@@ -35,7 +35,7 @@ My Claude Code 是为 Claude Code CLI 设计的技能（Skills）和命令（Com
 
 | 仓库 | 描述 | 安装方式 |
 |------|------|----------|
-| **[shareAI-skills](https://github.com/shareAI-lab/shareAI-skills)** | 开发、内容创作等专业技能 | `git clone` 手动安装 |
+| **[shareAI-skills](https://github.com/shareai-lab/shareAI-skills)** | 开发、内容创作等专业技能 | `git clone` 手动安装 |
 | **[superpowers](https://github.com/obra/superpowers)** | Agent 开发工作流技能集 | Claude Code 插件市场 |
 
 #### superpowers 安装（推荐）
@@ -73,7 +73,7 @@ My Claude Code 是为 Claude Code CLI 设计的技能（Skills）和命令（Com
 
 ```bash
 # 克隆并一键安装所有技能
-git clone https://github.com/shareAI-lab/shareAI-skills.git
+git clone https://github.com/shareai-lab/shareAI-skills.git
 cp -r shareAI-skills/skills/* ~/.claude/skills/
 
 # 清理克隆目录（可选）
@@ -110,8 +110,8 @@ fi
 ### Step 1: 克隆仓库
 
 ```bash
-# 克隆到本地
-git clone git@github.com:quan2005/my_claude_code.git ~/my_claude_code
+# 克隆到本地（使用 HTTPS，无需 SSH 配置）
+git clone https://github.com/quan2005/my_claude_code.git ~/my_claude_code
 
 # 复制技能到 Claude Code 技能目录
 cp -r ~/my_claude_code/skills/* ~/.claude/skills/
@@ -148,7 +148,7 @@ ls ~/.claude/commands/
 
 ```bash
 # 克隆并一键安装所有技能
-git clone https://github.com/shareAI-lab/shareAI-skills.git
+git clone https://github.com/shareai-lab/shareAI-skills.git
 cp -r shareAI-skills/skills/* ~/.claude/skills/
 rm -rf shareAI-skills
 ```
