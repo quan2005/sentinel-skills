@@ -1,59 +1,144 @@
 ---
 name: creating-images
-description: 利用 Nano Banana Pro（推理驱动型模型）生成具有逻辑性、物理准确性和高保真文字的图像，支持搜索增强和复杂的身份锁定。
+description: Use when user requests image generation with text, diagrams, or data visualization that requires logical consistency, factual accuracy, or character identity preservation. Use when current image outputs have incorrect text, inconsistent characters, or outdated information.
 ---
 
-### 1. 核心工作流升级 (Workflow)
-Nano Banana Pro 会在渲染前进行“思考”和“规划”。
-*   **规划阶段：** 模型根据提示词评估物理逻辑（如重力、光影细节）。
-*   **检索阶段：** 如果涉及实时数据，模型会自动调用 Google 搜索增强（Search Grounding）。
-*   **执行阶段：** 支持通过对话进行“语言驱动的 Photoshop”式修改，而非简单重生成。
+# Creating Images with Nano Banana Pro
 
-### 2. 提示词结构：六大核心支柱 (Six-Pillar Formula)
-放弃关键词堆叠（Tag Soups），采用自然语言和完整句子。
+## Overview
 
-**写入提示词的顺序与维度：**
-1.  **主体 (Subject)：** 必须具体。例如：“一位穿着香奈儿套装的优雅老妇”，而非“一个女人”。
-2.  **动作 (Action)：** 描述动态。如“摩托车手在半空中跳跃”，让模型计算重力和灰尘轨迹。
-3.  **环境 (Setting)：** 确定位置和光影。例如“巴西高端美食食谱的摆盘”，触发逻辑装饰。
-4.  **构图 (Composition)：** 使用电影摄像术语。如“低角度镜头”、“深焦”、“21:9 宽屏”。
-5.  **风格 (Style)：** 明确定义。如“3D 动画”、“黑色电影”或“1990年代产品摄影”。
-6.  **约束与文字 (Constraints & Text)：** 明确文字内容、字体和位置。
+Nano Banana Pro is a reasoning-driven image generation model that "thinks" before rendering. Unlike prompt-keyword models, it evaluates physics logic, performs search grounding for real-time data, and supports iterative "Photoshop-style" edits via conversation.
 
-### 3. 文字渲染技巧 (Typography)
-*   **准确性控制：** 15字以内的短句准确率最高；为保证文字 99% 以上准确，总字数应控制在 **400 字以内**。
-*   **格式要求：** 使用引号标注字面量，并指定字体（如 serif, sans-serif）和粗细（bold）。
-*   **多语言翻译：** 模型可直接翻译图片内的文字，例如：“将罐头上的英文翻译成韩文”。
+**Core principle:** Act as creative director providing a detailed shot brief, not a keyword tagger.
 
-### 4. 搜索增强与事实准确 (Search Grounding)
-当需要生成包含真实数据的图表或实时事件图时，必须开启搜索增强。
-*   **触发词：** 在提示词中加入 **“latest”、“today”、“current”** 等时间敏感词。
-*   **用途：** 适用于财报信息图、今日天气卡片、最新的科技发布会新闻图等。
+## When to Use
 
-### 5. 身份锁定与结构控制 (Consistency & Structure)
-*   **身份锁定 (Identity Locking)：** 现支持多达 **14 张参考图**（6 张为高保真输入）。
-*   **引用方式：** 明确指令“保持面部特征与图片 1 完全一致”，以跨场景维持角色身份。
-*   **草图转完稿 (Sketch-to-Render)：** 上传手绘草图，并提示“严格遵循此草图的布局”，以强制执行设计的排版。
+```dot
+digraph when_to_use {
+    rankdir=TB;
+    node [shape=box, style=rounded];
 
-### 6. 命令行参考 (CLI Examples)
+    start [label="User wants image generation"];
+    has_text [label="Requires text rendering?", shape=diamond];
+    needs_facts [label="Needs real-time/current data?", shape=diamond];
+    character_consistency [label="Character consistency across images?", shape=diamond];
+
+    use_nbp [label="Use Nano Banana Pro", shape=doublecircle, style=filled];
+    use_other [label="Standard Imagen model sufficient", shape=box];
+
+    start -> has_text;
+    has_text -> use_nbp [label="Yes"];
+    has_text -> needs_facts [label="No"];
+    needs_facts -> use_nbp [label="Yes"];
+    needs_facts -> character_consistency [label="No"];
+    character_consistency -> use_nbp [label="Yes"];
+    character_consistency -> use_other [label="No"];
+}
+```
+
+**Use Nano Banana Pro when:**
+- Image contains text that must be accurate (diagrams, charts, posters)
+- Need real-time/factual data (news graphics, financial reports, weather cards)
+- Character identity must persist across multiple images
+- Need iterative refinement based on conversation
+- Physics/logic accuracy matters (gravity, lighting, materials)
+
+**Standard Imagen sufficient when:**
+- Simple creative imagery without text
+- No factual accuracy requirements
+- One-off generation without iteration
+
+## Six-Pillar Prompt Formula
+
+Abandon keyword stacking ("cat, park, 4k"). Use natural language sentences in this order:
+
+| Pillar | Description | Example |
+|--------|-------------|---------|
+| **Subject** | Must be specific | "一位穿着香奈儿套装的优雅老妇" not "一个女人" |
+| **Action** | Describe dynamics | "摩托车手在半空中跳跃" triggers gravity calculation |
+| **Setting** | Location + lighting | "巴西高端美食食谱的摆盘" triggers logical decoration |
+| **Composition** | Cinema terminology | "低角度镜头", "深焦", "21:9 宽屏" |
+| **Style** | Define clearly | "3D动画", "黑色电影", "1990年代产品摄影" |
+| **Constraints** | Text content, font, position | See Typography section |
+
+## Typography & Text Rendering
+
+**Accuracy rules:**
+- Under 15 characters: ~99% accuracy
+- For guaranteed accuracy: keep total under **400 characters**
+- Use quotation marks for literal text
+- Specify font (serif/sans-serif) and weight (bold)
+
+**Multilingual support:**
+- Model can translate text in-image: "将罐头上的英文翻译成韩文"
+
+## Search Grounding
+
+When generating charts or graphics with real-world data, enable search grounding.
+
+**Trigger words:** "latest", "today", "current", "2026", "now"
+
+**Use cases:**
+- Financial infographics with current stock data
+- Weather cards with today's forecast
+- News graphics about recent events
+- Holiday calendar with current year dates
 
 ```bash
-# ❌ 错误示例：关键词堆叠
+# Enable search with trigger words
+imagen "搜索 2026 年中国的节假日安排，并生成一张现代风格的中文信息图表..."
+```
+
+## Identity Locking
+
+Maintain consistent character appearance across scenes and edits.
+
+**Capabilities:**
+- Up to **14 reference images** (6 high-fidelity)
+- Explicit instruction required: "保持面部特征与图片 1 完全一致"
+
+**Sketch-to-render workflow:**
+1. Upload hand-drawn sketch
+2. Prompt: "严格遵循此草图的布局"
+3. Model enforces layout while rendering
+
+## CLI Quick Reference
+
+```bash
+# ❌ BAD: Keyword soup
 imagen "cat, park, 4k, realistic"
 
-# ✅ 推荐示例：创意总监式指令
+# ✅ GOOD: Creative director brief
 imagen "一张为巴西高端美食杂志拍摄的照片，主体是一个精心摆盘的巴西牛肉三明治，配有新鲜的香草装饰。采用电影感光影，浅景深（f/1.8），背景是模糊的现代化厨房。强调面包的焦脆纹理和芝士流动的光泽。" -r 4K -a 16:9
 
-# 搜索增强示例
+# Search grounding (trigger: "2026年")
 imagen "搜索 2026 年中国的节假日安排，并生成一张现代风格的中文信息图表，包含详细的放假日期和 CEO 的寄语。" --verbose
 
-# 身份锁定编辑示例
+# Identity locking with reference image
 imagen "使用图片 1 作为角色参考。保持人物脸部特征完全一致，但将表情改为惊喜，并让他指向右侧的 3D 文字 '3分钟搞定'。" -i person.png
 ```
 
-### 7. 迭代修改策略 (Iteration)
-*   **修改而非重做：** 如果结果已达 80%，直接输入：“很好，但请把灯光改为夕阳，并将文字改为蓝色”。
-*   **物理修正：** 模型能理解重力和材质。如果物体看起来不对，可以提示：“根据流体动力学调整牛奶倾倒的角度”。
+## Iterative Refinement
 
+**Modify, don't regenerate:**
 
-**你可以把这个技能想象成在指挥一支专业的电影摄制组：** 你不仅仅是提供一个“关键词”，而是作为**创意总监**提供一份详尽的**拍摄简报**。你负责定义故事、光影和材质，而 Nano Banana Pro 则是那位能够查阅实时资料并理解物理规律的执行者。
+When result is 80% good, iterate conversationally:
+- "很好，但请把灯光改为夕阳，并将文字改为蓝色"
+- "根据流体动力学调整牛奶倾倒的角度"
+
+Model understands physics and materials—use technical language for precise corrections.
+
+## Common Mistakes
+
+| Mistake | Fix |
+|---------|-----|
+| Keywords instead of sentences | Use natural language with full descriptions |
+| No text constraints | Specify font, position, and exact content in quotes |
+| Missing search triggers | Add "latest", "today", "current" for factual data |
+| Generic subjects | Be specific: "穿香奈儿的老妇" not "女人" |
+| Not using identity locks | Reference images + explicit "保持面部特征完全一致" |
+| Regenerating from scratch | Use iterative conversation for 80%+ results |
+
+## Mental Model
+
+Think of yourself as directing a professional film crew. You provide the shot brief—story, lighting, materials—while Nano Banana Pro is the executor who can research real-time facts and understands physics laws.
