@@ -1,217 +1,59 @@
 ---
 name: creating-images
-description: Use when user requests image generation, creating visuals, generating artwork, or needs to transform sketches/references into polished images
+description: 利用 Nano Banana Pro（推理驱动型模型）生成具有逻辑性、物理准确性和高保真文字的图像，支持搜索增强和复杂的身份锁定。
 ---
 
-# Creating Images with imagen CLI
+### 1. 核心工作流升级 (Workflow)
+Nano Banana Pro 会在渲染前进行“思考”和“规划”。
+*   **规划阶段：** 模型根据提示词评估物理逻辑（如重力、光影细节）。
+*   **检索阶段：** 如果涉及实时数据，模型会自动调用 Google 搜索增强（Search Grounding）。
+*   **执行阶段：** 支持通过对话进行“语言驱动的 Photoshop”式修改，而非简单重生成。
 
-## Overview
+### 2. 提示词结构：六大核心支柱 (Six-Pillar Formula)
+放弃关键词堆叠（Tag Soups），采用自然语言和完整句子。
 
-`imagen` generates images from text prompts, optionally using reference images. Always verify inputs exist, view references before prompting, and check outputs after generation.
+**写入提示词的顺序与维度：**
+1.  **主体 (Subject)：** 必须具体。例如：“一位穿着香奈儿套装的优雅老妇”，而非“一个女人”。
+2.  **动作 (Action)：** 描述动态。如“摩托车手在半空中跳跃”，让模型计算重力和灰尘轨迹。
+3.  **环境 (Setting)：** 确定位置和光影。例如“巴西高端美食食谱的摆盘”，触发逻辑装饰。
+4.  **构图 (Composition)：** 使用电影摄像术语。如“低角度镜头”、“深焦”、“21:9 宽屏”。
+5.  **风格 (Style)：** 明确定义。如“3D 动画”、“黑色电影”或“1990年代产品摄影”。
+6.  **约束与文字 (Constraints & Text)：** 明确文字内容、字体和位置。
 
-## Quick Reference
+### 3. 文字渲染技巧 (Typography)
+*   **准确性控制：** 15字以内的短句准确率最高；为保证文字 99% 以上准确，总字数应控制在 **400 字以内**。
+*   **格式要求：** 使用引号标注字面量，并指定字体（如 serif, sans-serif）和粗细（bold）。
+*   **多语言翻译：** 模型可直接翻译图片内的文字，例如：“将罐头上的英文翻译成韩文”。
 
-```
-imagen [PROMPT] [OPTIONS]
+### 4. 搜索增强与事实准确 (Search Grounding)
+当需要生成包含真实数据的图表或实时事件图时，必须开启搜索增强。
+*   **触发词：** 在提示词中加入 **“latest”、“today”、“current”** 等时间敏感词。
+*   **用途：** 适用于财报信息图、今日天气卡片、最新的科技发布会新闻图等。
 
-Options:
-  -m, --model <MODEL>         Model preset (mini, default, max) [default: default]
-  -o, --output <OUTPUT>       Output path [default: ./imagen_[timestamp].png]
-  -i, --input <INPUT>         Reference file (txt/md for details, image for reference)
-  -a, --aspect-ratio <RATIO>  e.g. 1:1, 16:9, 9:16
-  -r, --resolution <RES>      1K (fast), 2K (default), 4K (slow, high quality)
-      --image-only            Return only image, no text
-      --verbose               Show API details
-```
+### 5. 身份锁定与结构控制 (Consistency & Structure)
+*   **身份锁定 (Identity Locking)：** 现支持多达 **14 张参考图**（6 张为高保真输入）。
+*   **引用方式：** 明确指令“保持面部特征与图片 1 完全一致”，以跨场景维持角色身份。
+*   **草图转完稿 (Sketch-to-Render)：** 上传手绘草图，并提示“严格遵循此草图的布局”，以强制执行设计的排版。
 
-## Workflow
-
-```dot
-digraph imagen_workflow {
-    rankdir=TB;
-    node [shape=box];
-
-    start [label="User requests image" shape=ellipse];
-    has_ref [label="Has reference image?" shape=diamond];
-    verify_ref [label="1. Verify file exists\n2. View with Read tool"];
-    craft_prompt [label="Craft detailed prompt\n(include reference context if applicable)"];
-    choose_params [label="Choose aspect-ratio & resolution"];
-    run [label="Run imagen command"];
-    view_result [label="View output with Read tool"];
-    satisfied [label="User satisfied?" shape=diamond];
-    done [label="Done" shape=ellipse];
-
-    start -> has_ref;
-    has_ref -> verify_ref [label="yes"];
-    has_ref -> craft_prompt [label="no"];
-    verify_ref -> craft_prompt;
-    craft_prompt -> choose_params;
-    choose_params -> run;
-    run -> view_result;
-    view_result -> satisfied;
-    satisfied -> done [label="yes"];
-    satisfied -> craft_prompt [label="no, refine"];
-}
-```
-
-## Prompt Structure
-
-**Write prompts in consistent order:**
-1. **Background/Scene** - environment, setting, context
-2. **Subject** - main element, character, object
-3. **Key Details** - materials, textures, colors, style
-4. **Constraints** - what to preserve, what to exclude
-
-**Include intended use** (ad, UI mock, infographic) to set polish level.
+### 6. 命令行参考 (CLI Examples)
 
 ```bash
-# ❌ Vague
-imagen "a cat"
+# ❌ 错误示例：关键词堆叠
+imagen "cat, park, 4k, realistic"
 
-# ✅ Structured: scene → subject → details → style
-imagen "Victorian windowsill with lace curtains, a fluffy orange cat sitting alertly, golden hour sunlight streaming through, bokeh garden background, professional photography, sharp focus on eyes, warm palette"
+# ✅ 推荐示例：创意总监式指令
+imagen "一张为巴西高端美食杂志拍摄的照片，主体是一个精心摆盘的巴西牛肉三明治，配有新鲜的香草装饰。采用电影感光影，浅景深（f/1.8），背景是模糊的现代化厨房。强调面包的焦脆纹理和芝士流动的光泽。" -r 4K -a 16:9
+
+# 搜索增强示例
+imagen "搜索 2026 年中国的节假日安排，并生成一张现代风格的中文信息图表，包含详细的放假日期和 CEO 的寄语。" --verbose
+
+# 身份锁定编辑示例
+imagen "使用图片 1 作为角色参考。保持人物脸部特征完全一致，但将表情改为惊喜，并让他指向右侧的 3D 文字 '3分钟搞定'。" -i person.png
 ```
 
-## Style-Specific Patterns
+### 7. 迭代修改策略 (Iteration)
+*   **修改而非重做：** 如果结果已达 80%，直接输入：“很好，但请把灯光改为夕阳，并将文字改为蓝色”。
+*   **物理修正：** 模型能理解重力和材质。如果物体看起来不对，可以提示：“根据流体动力学调整牛奶倾倒的角度”。
 
-**Photorealism:** Use camera/lens terms instead of generic "8K/ultra-detailed":
-```bash
-# ❌ Generic quality words
-imagen "ultra realistic detailed 8K photo of sailor"
 
-# ✅ Photography language
-imagen "candid photograph of elderly sailor on fishing boat, weathered skin with visible pores and wrinkles, shot on 35mm film, 50mm lens, shallow depth of field, soft coastal daylight, subtle film grain, natural color balance, no retouching"
-```
-
-**UI Mockups:** Describe as if product already exists:
-```bash
-imagen "mobile app UI for farmers market: header, vendor list with photos, Today's specials section, location/hours. White background, subtle accent colors, clear typography. Place in iPhone frame"
-```
-
-**Logo Generation:** Focus on scalability and simplicity:
-```bash
-imagen "original logo for Field & Flour bakery, warm and timeless, clean vector-like shapes, strong silhouette, balanced negative space, flat design, no gradients, plain background, centered with padding, no watermark"
-```
-
-## Text in Images
-
-**Put literal text in quotes or ALL CAPS:**
-```bash
-# Specify exact text, typography, placement
-imagen "billboard mockup with text \"Fresh and clean\" in bold sans-serif, high contrast, centered, clean kerning. Text appears once, perfectly legible. No watermarks."
-```
-
-**For tricky words:** Spell letter-by-letter to improve accuracy.
-
-## Common Use Cases
-
-| Use Case | Aspect Ratio | Resolution | Notes |
-|----------|--------------|------------|-------|
-| Mobile splash | 9:16 | 2K | Portrait orientation |
-| Desktop wallpaper | 16:9 | 4K | Landscape, high detail |
-| Social media square | 1:1 | 2K | Instagram, profile pics |
-| Hero banner | 16:9 | 2K | Website headers |
-| Quick concept | any | 1K | Fast iteration |
-
-## Using Reference Images
-
-When user provides a reference image:
-
-1. **Verify it exists:** `ls path/to/image.png`
-2. **View it:** Use Read tool to understand content
-3. **Describe in prompt:** Reference what you see, add desired changes
-4. **Use -i flag:** `imagen "prompt" -i reference.png`
-
-### Edit Constraints (Critical)
-
-**State exclusions and invariants explicitly:**
-```bash
-# ❌ Vague edit
-imagen "make it winter" -i scene.png
-
-# ✅ Explicit constraints: what changes vs what's preserved
-imagen "Change only: add snowfall, winter evening lighting. Preserve exactly: camera angle, composition, all objects, background layout. Do not add or remove elements." -i scene.png
-```
-
-**For identity preservation** (faces, characters):
-```bash
-imagen "Replace only clothing. Do not change face, facial features, skin tone, body shape, pose, or expression. Preserve exact likeness and proportions. Match lighting and shadows to original." -i person.png -i outfit.png
-```
-
-### Multi-Image Referencing
-
-**Reference each input by index + description:**
-```bash
-# Image 1: subject, Image 2: style reference
-imagen "Apply the watercolor style from Image 2 to the subject in Image 1. Keep composition from Image 1, use color palette and brushwork from Image 2." -i subject.png -i style-ref.png
-```
-
-**For compositing:**
-```bash
-imagen "Place the dog from Image 2 next to the person in Image 1. Match lighting, perspective, and scale. Do not change Image 1's background or framing." -i scene.png -i dog.png
-```
-
-### Style Transfer
-
-```bash
-imagen "Use the same style from the input image and generate a man riding a motorcycle on a white background" -i pixels.png
-```
-
-### Sketch to Render
-
-```bash
-imagen "Turn this drawing into photorealistic image. Preserve exact layout, proportions, perspective. Add realistic materials and lighting consistent with sketch intent. Do not add new elements or text." -i sketch.png
-```
-
-## Iteration Strategy
-
-**Start simple, refine with small single-change follow-ups:**
-```bash
-# Round 1: Base prompt
-imagen "modern kitchen interior, morning light" -o kitchen-v1.png
-
-# Round 2: Single refinement
-imagen "Same kitchen. Make lighting warmer, golden hour feel" -i kitchen-v1.png -o kitchen-v2.png
-
-# Round 3: Another single change
-imagen "Same scene. Add subtle steam rising from coffee cup on counter" -i kitchen-v2.png -o kitchen-v3.png
-```
-
-**Avoid overloading:** Don't try to specify everything in one prompt. Iterate.
-
-**Re-specify critical details** if they start to drift between iterations.
-
-## Common Mistakes
-
-| Mistake | Fix |
-|---------|-----|
-| Using invalid resolution like "1080x1920" | Use 1K, 2K, or 4K only |
-| Not viewing reference before prompting | Always Read the reference image first |
-| Vague prompts like "make it better" | Be specific: style, colors, composition |
-| Not checking output | Always view result with Read tool |
-| Wrong aspect ratio for use case | Match ratio to final use (9:16 mobile, 16:9 desktop) |
-| Generic quality words "8K ultra detailed" | Use camera/lens terms for photorealism |
-| Vague edit requests | State what changes AND what must be preserved |
-| Overloading first prompt | Start simple, iterate with single changes |
-| Missing text constraints | Put exact text in quotes, specify typography |
-
-## Examples
-
-**Infographic:**
-```bash
-imagen "Detailed infographic of automatic coffee machine flow: bean basket → grinding → scale → boiler → output. Technical but visually clear, labeled components." -r 2K -a 9:16
-```
-
-**Product mockup with text:**
-```bash
-imagen "Billboard mockup on highway at sunset. Product: shampoo bottle centered. Text (verbatim): \"Fresh and clean\" in bold sans-serif, high contrast. No watermarks." -i product.png -r 2K
-```
-
-**Character consistency (multi-page illustration):**
-```bash
-# Page 1: Establish character
-imagen "Children's book illustration: young forest hero in green hooded tunic, brown boots, kind expression, gentle eyes. Watercolor style, warm earthy colors. Plain forest background."
-
-# Page 2: Same character, new scene (reference page 1)
-imagen "Same character from Image 1, now helping a squirrel from fallen tree. Same tunic, same features. Snowy forest, soft lighting." -i page1.png
-```
+**你可以把这个技能想象成在指挥一支专业的电影摄制组：** 你不仅仅是提供一个“关键词”，而是作为**创意总监**提供一份详尽的**拍摄简报**。你负责定义故事、光影和材质，而 Nano Banana Pro 则是那位能够查阅实时资料并理解物理规律的执行者。
