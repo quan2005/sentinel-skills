@@ -25,7 +25,7 @@ My Claude Code 是为 Claude Code CLI 设计的技能（Skills）和命令（Com
 | 技能 | 描述 | 适用场景 |
 |------|------|----------|
 | **talent-discovery** | 才能发现 — 结合盖洛普优势理论、心流理论和荣格心理学的苏格拉底式指导 | 职业规划、自我发现、优势探索、潜在能力挖掘 |
-| **prompt-engineering-patterns** | 提示工程模式 — 提示工程最佳实践和模式库 | 学习提示工程技巧、创建提示模板 |
+| **vibe-plan** | 计划生成 — 将模糊想法转化为可执行计划 | 开发任务、内容创作、方案设计、学习计划、项目规划 |
 | **prompt-optimization** | 提示优化 — 优化和改进系统提示词 | 改进现有提示词效果、提示词诊断 |
 | **creating-images** | 图像生成 — 创建和生成图像内容 | 视觉内容创作、图像生成 |
 
@@ -86,8 +86,7 @@ rm -rf shareAI-skills
 
 | 命令 | 描述 |
 |------|------|
-| **/product-philosophy** | 产品设计哲学探索 — 通过讨论探索产品定位、设计哲学和战略方向 |
-| **/pr** | PR 相关命令 — 创建和管理 Pull Request |
+| **/merge-request** | 创建干净、经过验证、文档完善的合并请求 |
 
 ---
 
@@ -125,11 +124,11 @@ cp -r ~/my_claude_code/commands/* ~/.claude/commands/
 ```bash
 # 检查技能包
 ls ~/.claude/skills/
-# 应看到: creating-images, prompt-engineering-patterns, prompt-optimization, talent-discovery
+# 应看到: creating-images, prompt-optimization, talent-discovery, vibe-plan
 
 # 检查命令
 ls ~/.claude/commands/
-# 应看到: product-philosophy.md, pr.md
+# 应看到: merge-request.md
 ```
 
 ### Step 3: 安装更多技能（可选）
@@ -165,7 +164,7 @@ rm -rf shareAI-skills
 或使用命令：
 
 ```
-/product-philosophy 让我们讨论这个产品的设计哲学
+/merge-request 创建一个合并请求
 ```
 
 ### Step 5: 验证技能可用性
@@ -193,14 +192,16 @@ rm -rf shareAI-skills
 
 **流程**：通过 4-10 个深度问题，挖掘用户的底层天赋，最终生成万字《个人天赋使用说明书》。
 
-### prompt-engineering-patterns — 提示工程模式
+### vibe-plan — 计划生成
 
-包含：
-- 提示模板库
-- 少样本学习技术
-- 链式思考（Chain-of-Thought）
-- 系统提示设计
-- 提示优化技巧
+将模糊想法转化为可执行计划，支持头脑风暴明确需求、定义成功标准，生成持久迭代的执行 prompt。
+
+**核心理念**：
+- 好的计划来自好问题，而非快速答案
+- 通过苏格拉底式对话挖掘真实需求
+- 生成可持久迭代的执行 prompt
+
+**流程**：交互式探索 → 需求明确 → 生成可执行计划 → 持续迭代
 
 ---
 
@@ -210,12 +211,11 @@ rm -rf shareAI-skills
 my_claude_code/
 ├── skills/                        # 技能包（复制到 ~/.claude/skills/）
 │   ├── talent-discovery/         # 才能发现
-│   ├── prompt-engineering-patterns/  # 提示工程模式
+│   ├── vibe-plan/                # 计划生成
 │   ├── prompt-optimization/      # 提示优化
 │   └── creating-images/          # 图像生成
 ├── commands/                      # 自定义命令（复制到 ~/.claude/commands/）
-│   ├── product-philosophy.md     # 产品哲学探索
-│   └── pr.md                    # PR 命令
+│   └── merge-request.md          # MR 创建流程
 ├── .context/                      # 上下文文件（gitignored）
 │   ├── todos.md
 │   └── notes.md
