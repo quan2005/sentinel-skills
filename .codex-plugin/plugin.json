@@ -1,0 +1,34 @@
+{
+  "name": "sentinel",
+  "version": "0.1.0",
+  "description": "Three coordinated development gate skills for requirements, verification, and documentation maintenance.",
+  "author": {
+    "name": "quan2005"
+  },
+  "homepage": "https://github.com/quan2005/sentinel",
+  "repository": "https://github.com/quan2005/sentinel",
+  "license": "MIT",
+  "keywords": [
+    "requirements",
+    "verification",
+    "documentation",
+    "development-workflow"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Sentinel",
+    "shortDescription": "Gate development work with requirements, verification, and docs skills.",
+    "longDescription": "Sentinel packages three development workflow skills: requirements-gate turns vague requests into approved user stories, verification-gate checks implementation against story and design contracts before commit, and docs-maintenance keeps project documentation aligned after verified changes.",
+    "developerName": "quan2005",
+    "category": "Productivity",
+    "capabilities": [
+      "Skills",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Use requirements-gate for this feature request.",
+      "Run verification-gate before I commit these changes.",
+      "Use docs-maintenance to update project documentation."
+    ]
+  }
+}
