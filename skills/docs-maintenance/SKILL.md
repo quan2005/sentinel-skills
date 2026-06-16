@@ -1,6 +1,6 @@
 ---
 name: docs-maintenance
-description: "文档自动维护（Docs Maintenance）——git commit 前，凡本次改动对应的 story 已 verified 且其 design.md 影响面涉及架构 / 设计 / 约定变更，必须使用本技能判断并同步更新 AGENTS.md / ARCH.md / DESIGN.md，并按需维护 README、llms.txt、用户使用说明与技术开发说明文档。当 PreToolUse hook 注入「文档维护」提醒时必须使用。文档已覆盖变更则跳过——本技能的产出是文档与代码一致，不是每次都改文档。"
+description: "文档自动维护（Docs Maintenance）——git commit 前，凡本次改动对应的 story 已 verified 且其 design.md 影响面涉及架构 / 设计 / 约定变更，必须使用本技能。文档已覆盖变更则跳过——本技能的产出是文档与代码一致，不是每次都改文档。"
 ---
 
 # 文档自动维护 Docs Maintenance
@@ -43,10 +43,8 @@ description: "文档自动维护（Docs Maintenance）——git commit 前，凡
 ## 文件关系
 
 - AGENTS.md 是唯一主源，本技能只写 AGENTS.md
-- 根目录 CLAUDE.md 应为指向 AGENTS.md 的软链，改主源自动生效
-- **CLAUDE.md 不存在**：首次写入 AGENTS.md 后自动创建软链 `ln -sf AGENTS.md CLAUDE.md`
-- **CLAUDE.md 存在且是软链**：无需处理（改 AGENTS.md 自动生效）
-- **CLAUDE.md 存在但是实体文件**：不擅自转换，提示用户人工处理（内容并入 AGENTS.md → 删实体文件 → 建软链）
+- 根目录 CLAUDE.md 是指向 AGENTS.md 的软链，改主源自动生效
+- 检测到 CLAUDE.md 为实体文件而非软链：不擅自转换，提示用户人工处理
 
 ## Rationalizations
 
@@ -78,4 +76,4 @@ description: "文档自动维护（Docs Maintenance）——git commit 前，凡
 
 ---
 
-> 安装说明见仓库根目录 `INSTALL.md`（面向人类读者，不属于技能上下文）。
+> 安装说明见 `INSTALL.md`（面向人类，不属于技能上下文）。
